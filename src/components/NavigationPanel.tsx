@@ -1,0 +1,124 @@
+import { useState } from "react";
+import {
+  Home,
+  DollarSign,
+  TrendingUp,
+  Settings,
+  LogOut,
+} from "lucide-react";
+import type { INavigationItem } from "@/types/navigation";
+import { cn } from "@/lib/utils";
+import jarvisLogo from "@/assets/jarvis_logo_nobg.svg";
+
+export function NavigationPanel() {
+  const [activeItem, setActiveItem] = useState<string>("expenses");
+
+  const navigationItems: INavigationItem[] = [
+    {
+      id: "home",
+      icon: Home,
+    },
+    {
+      id: "expenses",
+      icon: DollarSign,
+    },
+    {
+      id: "analytics",
+      icon: TrendingUp,
+    },
+  ];
+
+  const footerItems: INavigationItem[] = [
+    {
+      id: "settings",
+      icon: Settings,
+    },
+    {
+      id: "logout",
+      icon: LogOut,
+    },
+  ];
+
+  const handleItemClick = (itemId: string) => {
+    setActiveItem(itemId);
+  };
+
+  return (
+    <aside
+      className="fixed left-0 top-0 h-screen w-[88px] flex flex-col bg-sidebar border-sidebar-border z-40"
+      aria-label="Menu de navegação"
+    >
+      {/* Header */}
+      <div className="border-sidebar-border flex items-center justify-center">
+        <img
+          src={jarvisLogo}
+          alt="Jarvis Logo"
+          className="w-full h-auto object-contain"
+          style={{ filter: 'brightness(0) saturate(100%) invert(18%) sepia(100%) saturate(6500%) hue-rotate(270deg) brightness(100%) contrast(105%)' }}
+        />
+      </div>
+
+      {/* Navigation Items */}
+      <nav className="flex-1 flex px-3 py-6" aria-label="Menu principal">
+        <ul className="w-full space-y-3 flex flex-col items-center">
+          {navigationItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeItem === item.id;
+
+            return (
+              <li key={item.id}>
+                <button
+                  onClick={() => handleItemClick(item.id)}
+                  className={cn(
+                    "w-16 h-16 flex items-center justify-center rounded-full transition-all",
+                    "hover:bg-sidebar-accent group",
+                    isActive &&
+                      "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
+                  )}
+                  aria-current={isActive ? "page" : undefined}
+                  aria-label={item.label}
+                >
+                  <Icon
+                    className={cn(
+                      "h-7 w-7",
+                      isActive
+                        ? "text-sidebar-primary-foreground"
+                        : "text-sidebar-foreground group-hover:text-sidebar-primary"
+                    )}
+                  />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+
+      {/* Footer */}
+      <div
+        className="px-3 py-6 border-sidebar-border"
+        aria-label="Menu secundário"
+      >
+        <ul className="space-y-3 flex flex-col items-center">
+          {footerItems.map((item) => {
+            const Icon = item.icon;
+
+            return (
+              <li key={item.id}>
+                <button
+                  onClick={() => handleItemClick(item.id)}
+                  className={cn(
+                    "w-16 h-16 flex items-center justify-center rounded-full transition-all",
+                    "hover:bg-sidebar-accent text-sidebar-foreground group"
+                  )}
+                  aria-label={item.label}
+                >
+                  <Icon className="h-7 w-7 text-sidebar-foreground group-hover:text-sidebar-primary" />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </aside>
+  );
+}
