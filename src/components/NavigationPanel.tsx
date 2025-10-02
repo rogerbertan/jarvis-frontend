@@ -67,13 +67,14 @@ export function NavigationPanel() {
 
             return (
               <li key={item.id}>
+                
                 <button
                   onClick={() => handleItemClick(item.id)}
                   className={cn(
                     "w-16 h-16 flex items-center justify-center rounded-full transition-all",
-                    "hover:bg-sidebar-accent group",
-                    isActive &&
-                      "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
+                    isActive
+                      ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
+                      : "bg-gray-700 hover:bg-sidebar-accent group"
                   )}
                   aria-current={isActive ? "page" : undefined}
                   aria-label={item.label}
@@ -108,7 +109,7 @@ export function NavigationPanel() {
                   onClick={() => handleItemClick(item.id)}
                   className={cn(
                     "w-16 h-16 flex items-center justify-center rounded-full transition-all",
-                    "hover:bg-sidebar-accent text-sidebar-foreground group"
+                    "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group"
                   )}
                   aria-label={item.label}
                 >
