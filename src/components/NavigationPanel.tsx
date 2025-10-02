@@ -45,11 +45,11 @@ export function NavigationPanel() {
 
   return (
     <aside
-      className="fixed left-0 top-0 h-screen w-[88px] flex flex-col bg-sidebar border-sidebar-border z-40"
+      className="fixed left-0 top-0 h-screen w-[88px] flex flex-col bg-sidebar"
       aria-label="Menu de navegação"
     >
       {/* Header */}
-      <div className="border-sidebar-border flex items-center justify-center">
+      <div className="flex items-center justify-center -mt-7">
         <img
           src={jarvisLogo}
           alt="Jarvis Logo"
@@ -96,7 +96,7 @@ export function NavigationPanel() {
 
       {/* Footer */}
       <div
-        className="px-3 py-6 border-sidebar-border"
+        className="px-3 py-6"
         aria-label="Menu secundário"
       >
         <ul className="space-y-3 flex flex-col items-center">

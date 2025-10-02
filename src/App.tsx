@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { NavigationPanel } from "@/components/NavigationPanel";
+import { Header } from "@/components/Header";
 import { AddExpenseForm } from "@/components/AddExpenseForm";
 import { ExpenseList } from "@/components/ExpenseList";
 import { MonthSelector } from "@/components/MonthSelector";
@@ -122,14 +123,10 @@ function App() {
   return (
     <div className="min-h-screen bg-background">
       <NavigationPanel />
-      <div className="ml-[88px] container mx-auto py-8 px-4 max-w-6xl">
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Jarvis - Assistente Financeiro</h1>
-          <p className="text-muted-foreground">
-            Acompanhe e gerencie suas despesas mensais
-          </p>
-        </header>
-
+      <Header />
+      <div className="ml-[88px] pt-16 container mx-auto py-8 pl-10 max-w-6xl">
+        <div className="mb-8">
+        </div>
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Left column - Form and Stats */}
           <div className="space-y-6">
