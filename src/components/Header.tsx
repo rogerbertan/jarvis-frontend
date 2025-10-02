@@ -20,7 +20,7 @@ export function Header() {
       <div className="h-full px-6 flex items-center justify-between">
         {/* Left: Application Title */}
         <div>
-          <h1 className="text-xl font-bold text-foreground">
+          <h1 className="text-xl font-bold text-foreground pl-3.5">
             Jarvis - Assistente Financeiro
           </h1>
         </div>
@@ -33,9 +33,9 @@ export function Header() {
               aria-label="Menu do usuário"
             >
               <Avatar className="h-10 w-10 cursor-pointer">
-                <AvatarImage src="" alt="User" />
+                <AvatarImage src="src/assets/avatar.jpeg" alt="User" />
                 <AvatarFallback className="bg-primary text-primary-foreground">
-                  JD
+                  RB
                 </AvatarFallback>
               </Avatar>
             </button>
