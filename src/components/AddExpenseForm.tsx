@@ -41,12 +41,12 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Adicionar Nova Despesa</CardTitle>
+        <CardTitle className="font-heading">Adicionar Nova Despesa</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="description" className="text-sm font-medium">
+            <label htmlFor="description" className="text-sm font-medium font-body">
               Descrição
             </label>
             <Input
@@ -62,7 +62,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="amount" className="text-sm font-medium">
+            <label htmlFor="amount" className="text-sm font-medium font-body">
               Valor
             </label>
             <Input
@@ -80,7 +80,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="date" className="text-sm font-medium">
+            <label htmlFor="date" className="text-sm font-medium font-body">
               Data
             </label>
             <Input

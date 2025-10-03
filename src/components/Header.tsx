@@ -20,7 +20,7 @@ export function Header() {
       <div className="h-full px-6 flex items-center justify-between">
         {/* Left: Application Title */}
         <div>
-          <h1 className="text-xl font-bold text-foreground pl-3.5">
+          <h1 className="text-xl font-bold text-foreground pl-3.5 font-heading">
             Jarvis - Assistente Financeiro
           </h1>
         </div>

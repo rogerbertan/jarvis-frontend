@@ -20,7 +20,7 @@ export function MonthSelector({
 }: IMonthSelectorProps) {
   return (
     <div className="space-y-2">
-      <label htmlFor="month-select" className="text-sm font-medium">
+      <label htmlFor="month-select" className="text-sm font-medium font-body">
         Filtrar por Mês
       </label>
       <Select value={selectedMonth} onValueChange={onMonthChange}>

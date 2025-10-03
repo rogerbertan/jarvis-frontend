@@ -37,10 +37,10 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Lista de Despesas</CardTitle>
+          <CardTitle className="font-heading">Lista de Despesas</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-center text-muted-foreground py-8">
+          <p className="text-center text-muted-foreground py-8 font-body">
             Nenhuma despesa encontrada. Adicione sua primeira despesa acima.
           </p>
         </CardContent>
@@ -51,7 +51,7 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Lista de Despesas ({expenses.length})</CardTitle>
+        <CardTitle className="font-heading">Lista de Despesas ({expenses.length})</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="rounded-md border">
@@ -67,11 +67,11 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
             <TableBody>
               {expenses.map((expense) => (
                 <TableRow key={expense.id}>
-                  <TableCell className="font-medium">
+                  <TableCell className="font-medium font-body">
                     {formatDate(expense.date)}
                   </TableCell>
-                  <TableCell>{expense.description}</TableCell>
-                  <TableCell className="text-right font-semibold">
+                  <TableCell className="font-body">{expense.description}</TableCell>
+                  <TableCell className="text-right font-semibold font-heading">
                     {formatAmount(expense.amount)}
                   </TableCell>
                   <TableCell>
