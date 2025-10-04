@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IExpense } from "@/types/expense";
+import { getCategoryName } from "@/types/category";
 
 interface IExpenseListProps {
   expenses: IExpense[];
@@ -60,6 +61,7 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
               <TableRow>
                 <TableHead>Data</TableHead>
                 <TableHead>Descrição</TableHead>
+                <TableHead>Categoria</TableHead>
                 <TableHead className="text-right">Valor</TableHead>
                 <TableHead className="w-[80px]"></TableHead>
               </TableRow>
@@ -71,6 +73,9 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
                     {formatDate(expense.date)}
                   </TableCell>
                   <TableCell className="font-body">{expense.description}</TableCell>
+                  <TableCell className="font-body">
+                    {getCategoryName(expense.category_id)}
+                  </TableCell>
                   <TableCell className="text-right font-semibold font-heading">
                     {formatAmount(expense.amount)}
                   </TableCell>

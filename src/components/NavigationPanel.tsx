@@ -59,8 +59,8 @@ export function NavigationPanel() {
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 flex px-3 py-6" aria-label="Menu principal">
-        <ul className="w-full space-y-3 flex flex-col items-center">
+      <nav className="flex-1 flex px-3" aria-label="Menu principal">
+        <ul className="w-full space-y-6 flex flex-col items-center">
           {navigationItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeItem === item.id;
@@ -71,7 +71,7 @@ export function NavigationPanel() {
                 <button
                   onClick={() => handleItemClick(item.id)}
                   className={cn(
-                    "w-16 h-16 flex items-center justify-center rounded-full transition-all",
+                    "w-15 h-15 flex items-center justify-center rounded-full transition-all",
                     isActive
                       ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
                       : "bg-gray-700 hover:bg-sidebar-accent group"
@@ -99,7 +99,7 @@ export function NavigationPanel() {
         className="px-3 py-6"
         aria-label="Menu secundário"
       >
-        <ul className="space-y-3 flex flex-col items-center">
+        <ul className="space-y-6 flex flex-col items-center">
           {footerItems.map((item) => {
             const Icon = item.icon;
 
@@ -108,7 +108,7 @@ export function NavigationPanel() {
                 <button
                   onClick={() => handleItemClick(item.id)}
                   className={cn(
-                    "w-16 h-16 flex items-center justify-center rounded-full transition-all",
+                    "w-15 h-15 flex items-center justify-center rounded-full transition-all",
                     "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group"
                   )}
                   aria-label={item.label}
