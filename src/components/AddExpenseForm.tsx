@@ -69,7 +69,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label htmlFor="description" className="text-sm font-medium font-body">
               Descrição
             </label>
@@ -85,7 +85,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label htmlFor="amount" className="text-sm font-medium font-body">
               Valor
             </label>
@@ -103,7 +103,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
             />
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label className="text-sm font-medium font-body">
               Data
             </label>
@@ -140,7 +140,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
             </Popover>
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <label className="text-sm font-medium font-body">
               Categoria
             </label>
