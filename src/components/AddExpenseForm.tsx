@@ -15,8 +15,11 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { Check, ChevronsUpDown, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import type { IExpenseFormData } from "@/types/expense";
 import { EXPENSE_CATEGORIES, getCategoryName } from "@/types/category";
 
@@ -31,7 +34,9 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
     date: new Date().toISOString().split("T")[0],
     category_id: 1,
   });
-  const [open, setOpen] = useState(false);
+  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,12 +52,14 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
 
     onAddExpense(formData);
 
+    const newDate = new Date();
     setFormData({
       description: "",
       amount: "",
-      date: new Date().toISOString().split("T")[0],
+      date: newDate.toISOString().split("T")[0],
       category_id: 1,
     });
+    setSelectedDate(newDate);
   };
 
   return (
@@ -97,30 +104,52 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="date" className="text-sm font-medium font-body">
+            <label className="text-sm font-medium font-body">
               Data
             </label>
-            <Input
-              id="date"
-              type="date"
-              value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
-              }
-              required
-            />
+            <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-body",
+                    !selectedDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate ? format(selectedDate, "PPP", { locale: ptBR }) : <span>Selecione uma data</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => {
+                    if (date) {
+                      setSelectedDate(date);
+                      setFormData({
+                        ...formData,
+                        date: date.toISOString().split("T")[0]
+                      });
+                      setCalendarOpen(false);
+                    }
+                  }}
+                  locale={ptBR}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="space-y-2">
             <label className="text-sm font-medium font-body">
               Categoria
             </label>
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={categoryOpen} onOpenChange={setCategoryOpen}>
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   role="combobox"
-                  aria-expanded={open}
+                  aria-expanded={categoryOpen}
                   className="w-full justify-between font-body"
                 >
                   {getCategoryName(formData.category_id)}
@@ -139,7 +168,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
                           value={category.name}
                           onSelect={() => {
                             setFormData({ ...formData, category_id: category.id });
-                            setOpen(false);
+                            setCategoryOpen(false);
                           }}
                         >
                           <Check
