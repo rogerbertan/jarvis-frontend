@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Image from "next/image";
 import { Home, DollarSign, TrendingUp, Settings, LogOut } from "lucide-react";
 import type { INavigationItem } from "@/types/navigation";
 import { cn } from "@/lib/utils";
@@ -42,11 +43,13 @@ export function NavigationPanel() {
       aria-label="Menu de navegação"
     >
       {/* Header */}
-      <div className="flex items-center justify-center -mt-7">
-        <img
+      <div className="relative w-[200px] h-[200px] -ml-14 -mt-10 -mb-10">
+        <Image
           src="/jarvis_logo_nobg.svg"
           alt="Jarvis Logo"
-          className="w-full h-auto object-contain"
+          fill
+          priority
+          className="object-contain"
           style={{
             filter:
               "brightness(0) saturate(100%) invert(18%) sepia(100%) saturate(6500%) hue-rotate(270deg) brightness(100%) contrast(105%)",
@@ -69,7 +72,7 @@ export function NavigationPanel() {
                     "w-15 h-15 flex items-center justify-center rounded-full transition-all",
                     isActive
                       ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
-                      : "bg-gray-700 hover:bg-sidebar-accent group"
+                      : "bg-gray-700 hover:bg-sidebar-accent group",
                   )}
                   aria-current={isActive ? "page" : undefined}
                   aria-label={item.label}
@@ -79,7 +82,7 @@ export function NavigationPanel() {
                       "h-7 w-7",
                       isActive
                         ? "text-sidebar-primary-foreground"
-                        : "text-sidebar-foreground group-hover:text-sidebar-primary"
+                        : "text-sidebar-foreground group-hover:text-sidebar-primary",
                     )}
                   />
                 </button>
@@ -101,7 +104,7 @@ export function NavigationPanel() {
                   onClick={() => handleItemClick(item.id)}
                   className={cn(
                     "w-15 h-15 flex items-center justify-center rounded-full transition-all",
-                    "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group"
+                    "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group",
                   )}
                   aria-label={item.label}
                 >

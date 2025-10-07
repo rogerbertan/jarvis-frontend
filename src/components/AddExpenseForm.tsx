@@ -114,7 +114,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-body",
-                    !selectedDate && "text-muted-foreground"
+                    !selectedDate && "text-muted-foreground",
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -182,7 +182,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
                               "mr-2 h-4 w-4",
                               formData.category_id === category.id
                                 ? "opacity-100"
-                                : "opacity-0"
+                                : "opacity-0",
                             )}
                           />
                           {category.name}
