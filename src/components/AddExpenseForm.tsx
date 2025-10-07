@@ -70,7 +70,10 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-2">
-            <label htmlFor="description" className="text-sm font-medium font-body">
+            <label
+              htmlFor="description"
+              className="text-sm font-medium font-body"
+            >
               Descrição
             </label>
             <Input
@@ -104,9 +107,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium font-body">
-              Data
-            </label>
+            <label className="text-sm font-medium font-body">Data</label>
             <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -117,7 +118,11 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {selectedDate ? format(selectedDate, "PPP", { locale: ptBR }) : <span>Selecione uma data</span>}
+                  {selectedDate ? (
+                    format(selectedDate, "PPP", { locale: ptBR })
+                  ) : (
+                    <span>Selecione uma data</span>
+                  )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -129,7 +134,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
                       setSelectedDate(date);
                       setFormData({
                         ...formData,
-                        date: date.toISOString().split("T")[0]
+                        date: date.toISOString().split("T")[0],
                       });
                       setCalendarOpen(false);
                     }
@@ -141,9 +146,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
           </div>
 
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium font-body">
-              Categoria
-            </label>
+            <label className="text-sm font-medium font-body">Categoria</label>
             <Popover open={categoryOpen} onOpenChange={setCategoryOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -167,7 +170,10 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
                           key={category.id}
                           value={category.name}
                           onSelect={() => {
-                            setFormData({ ...formData, category_id: category.id });
+                            setFormData({
+                              ...formData,
+                              category_id: category.id,
+                            });
                             setCategoryOpen(false);
                           }}
                         >

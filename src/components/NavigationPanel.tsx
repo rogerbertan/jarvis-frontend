@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  Home,
-  DollarSign,
-  TrendingUp,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { Home, DollarSign, TrendingUp, Settings, LogOut } from "lucide-react";
 import type { INavigationItem } from "@/types/navigation";
 import { cn } from "@/lib/utils";
 
@@ -53,7 +47,10 @@ export function NavigationPanel() {
           src="/jarvis_logo_nobg.svg"
           alt="Jarvis Logo"
           className="w-full h-auto object-contain"
-          style={{ filter: 'brightness(0) saturate(100%) invert(18%) sepia(100%) saturate(6500%) hue-rotate(270deg) brightness(100%) contrast(105%)' }}
+          style={{
+            filter:
+              "brightness(0) saturate(100%) invert(18%) sepia(100%) saturate(6500%) hue-rotate(270deg) brightness(100%) contrast(105%)",
+          }}
         />
       </div>
 
@@ -66,7 +63,6 @@ export function NavigationPanel() {
 
             return (
               <li key={item.id}>
-                
                 <button
                   onClick={() => handleItemClick(item.id)}
                   className={cn(
@@ -94,10 +90,7 @@ export function NavigationPanel() {
       </nav>
 
       {/* Footer */}
-      <div
-        className="px-3 py-6"
-        aria-label="Menu secundário"
-      >
+      <div className="px-3 py-6" aria-label="Menu secundário">
         <ul className="space-y-6 flex flex-col items-center">
           {footerItems.map((item) => {
             const Icon = item.icon;

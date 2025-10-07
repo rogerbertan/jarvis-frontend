@@ -127,8 +127,7 @@ export default function Home() {
       <NavigationPanel />
       <Header />
       <div className="ml-[88px] pt-16 container mx-auto py-8 pl-10 max-w-6xl">
-        <div className="mb-8">
-        </div>
+        <div className="mb-8"></div>
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Left column - Form and Stats */}
           <div className="space-y-6">

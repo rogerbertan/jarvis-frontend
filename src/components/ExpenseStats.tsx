@@ -21,17 +21,25 @@ export function ExpenseStats({ stats }: IExpenseStatsProps) {
       <CardContent>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground font-body">Período</span>
-            <span className="text-lg font-semibold font-body">{stats.month}</span>
+            <span className="text-sm text-muted-foreground font-body">
+              Período
+            </span>
+            <span className="text-lg font-semibold font-body">
+              {stats.month}
+            </span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground font-body">
               Total de Despesas
             </span>
-            <span className="text-lg font-semibold font-heading">{stats.count}</span>
+            <span className="text-lg font-semibold font-heading">
+              {stats.count}
+            </span>
           </div>
           <div className="flex items-center justify-between border-t pt-4">
-            <span className="text-sm text-muted-foreground font-body">Valor Total</span>
+            <span className="text-sm text-muted-foreground font-body">
+              Valor Total
+            </span>
             <span className="text-2xl font-bold text-primary font-heading">
               {formatAmount(stats.total)}
             </span>

@@ -52,7 +52,9 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-heading">Lista de Despesas ({expenses.length})</CardTitle>
+        <CardTitle className="font-heading">
+          Lista de Despesas ({expenses.length})
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="rounded-md border">
@@ -72,7 +74,9 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
                   <TableCell className="font-medium font-body">
                     {formatDate(expense.date)}
                   </TableCell>
-                  <TableCell className="font-body">{expense.description}</TableCell>
+                  <TableCell className="font-body">
+                    {expense.description}
+                  </TableCell>
                   <TableCell className="font-body">
                     {getCategoryName(expense.category_id)}
                   </TableCell>
