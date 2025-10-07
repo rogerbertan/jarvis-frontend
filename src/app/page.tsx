@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useMemo } from "react";
 import { NavigationPanel } from "@/components/NavigationPanel";
 import { Header } from "@/components/Header";
@@ -12,7 +14,7 @@ import type {
   IMonthlyStats,
 } from "@/types/expense";
 
-function App() {
+export default function Home() {
   // State for expenses (mocked data matching backend format)
   const [expenses, setExpenses] = useState<IExpense[]>([
     {
@@ -151,5 +153,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
