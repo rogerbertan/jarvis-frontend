@@ -33,7 +33,7 @@ export function Header() {
               aria-label="Menu do usuário"
             >
               <Avatar className="h-10 w-10 cursor-pointer">
-                <AvatarImage src="src/assets/avatar.jpeg" alt="User" />
+                <AvatarImage src="/avatar.jpeg" alt="User" />
                 <AvatarFallback className="bg-primary text-primary-foreground">
                   RB
                 </AvatarFallback>

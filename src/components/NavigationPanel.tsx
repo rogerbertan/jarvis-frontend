@@ -8,7 +8,6 @@ import {
 } from "lucide-react";
 import type { INavigationItem } from "@/types/navigation";
 import { cn } from "@/lib/utils";
-import jarvisLogo from "@/assets/jarvis_logo_nobg.svg";
 
 export function NavigationPanel() {
   const [activeItem, setActiveItem] = useState<string>("expenses");
@@ -51,7 +50,7 @@ export function NavigationPanel() {
       {/* Header */}
       <div className="flex items-center justify-center -mt-7">
         <img
-          src={jarvisLogo}
+          src="/jarvis_logo_nobg.svg"
           alt="Jarvis Logo"
           className="w-full h-auto object-contain"
           style={{ filter: 'brightness(0) saturate(100%) invert(18%) sepia(100%) saturate(6500%) hue-rotate(270deg) brightness(100%) contrast(105%)' }}
