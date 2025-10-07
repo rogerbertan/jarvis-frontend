@@ -1,24 +1,30 @@
-import { useState } from "react";
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Home, DollarSign, TrendingUp, Settings, LogOut } from "lucide-react";
 import type { INavigationItem } from "@/types/navigation";
 import { cn } from "@/lib/utils";
 
 export function NavigationPanel() {
-  const [activeItem, setActiveItem] = useState<string>("expenses");
+  const pathname = usePathname();
 
   const navigationItems: INavigationItem[] = [
     {
       id: "home",
       icon: Home,
+      href: "/",
     },
     {
       id: "expenses",
       icon: DollarSign,
+      href: "/expenses",
     },
     {
       id: "analytics",
       icon: TrendingUp,
+      href: "/analytics",
     },
   ];
 
@@ -32,10 +38,6 @@ export function NavigationPanel() {
       icon: LogOut,
     },
   ];
-
-  const handleItemClick = (itemId: string) => {
-    setActiveItem(itemId);
-  };
 
   return (
     <aside
@@ -62,12 +64,12 @@ export function NavigationPanel() {
         <ul className="w-full space-y-6 flex flex-col items-center">
           {navigationItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeItem === item.id;
+            const isActive = pathname === item.href;
 
             return (
               <li key={item.id}>
-                <button
-                  onClick={() => handleItemClick(item.id)}
+                <Link
+                  href={item.href || "#"}
                   className={cn(
                     "w-15 h-15 flex items-center justify-center rounded-full transition-all",
                     isActive
@@ -85,7 +87,7 @@ export function NavigationPanel() {
                         : "text-sidebar-foreground group-hover:text-sidebar-primary",
                     )}
                   />
-                </button>
+                </Link>
               </li>
             );
           })}
@@ -101,7 +103,6 @@ export function NavigationPanel() {
             return (
               <li key={item.id}>
                 <button
-                  onClick={() => handleItemClick(item.id)}
                   className={cn(
                     "w-15 h-15 flex items-center justify-center rounded-full transition-all",
                     "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group",
