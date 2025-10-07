@@ -67,7 +67,7 @@ export function NavigationPanel() {
             const isActive = pathname === item.href;
 
             return (
-              <li key={item.id}>
+              <li key={item.id} className="relative z-10">
                 <Link
                   href={item.href || "#"}
                   className={cn(
