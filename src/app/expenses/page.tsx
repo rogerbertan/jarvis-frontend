@@ -87,7 +87,7 @@ export default function ExpensesPage() {
   const monthlyStats = useMemo((): IMonthlyStats => {
     const total = filteredExpenses.reduce(
       (sum, expense) => sum + expense.amount,
-      0,
+      0
     );
 
     let monthLabel = "Todos os Meses";
