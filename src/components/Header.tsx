@@ -16,11 +16,11 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-[88px] right-0 h-16 bg-sidebar">
+    <header className="fixed top-0 left-[88px] right-0 h-18 bg-sidebar">
       <div className="h-full px-6 flex items-center justify-between">
         {/* Left: Application Title */}
         <div>
-          <h1 className="text-xl font-bold text-foreground mt-4 pl-3.5 font-heading">
+          <h1 className="text-xl font-bold text-foreground mt-2 pl-3.5 font-heading">
             Jarvis - Assistente Financeiro
           </h1>
         </div>
@@ -32,7 +32,7 @@ export function Header() {
               className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-full"
               aria-label="Menu do usuário"
             >
-              <Avatar className="h-10 w-10 cursor-pointer mt-4">
+              <Avatar className="h-10 w-10 cursor-pointer mt-2">
                 <AvatarImage src="/avatar.jpeg" alt="User" />
                 <AvatarFallback className="bg-primary text-primary-foreground">
                   RB
