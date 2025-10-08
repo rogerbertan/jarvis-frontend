@@ -3,7 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, DollarSign, TrendingUp, Settings, LogOut } from "lucide-react";
+import {
+  Home,
+  DollarSign,
+  Wallet,
+  TrendingUp,
+  Settings,
+  LogOut,
+} from "lucide-react";
 import type { INavigationItem } from "@/types/navigation";
 import { cn } from "@/lib/utils";
 
@@ -20,6 +27,11 @@ export function NavigationPanel() {
       id: "expenses",
       icon: DollarSign,
       href: "/expenses",
+    },
+    {
+      id: "incomes",
+      icon: Wallet,
+      href: "/incomes",
     },
     {
       id: "analytics",
@@ -74,7 +86,7 @@ export function NavigationPanel() {
                     "w-15 h-15 flex items-center justify-center rounded-full transition-all",
                     isActive
                       ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
-                      : "bg-gray-700 hover:bg-sidebar-accent group",
+                      : "bg-gray-700 hover:bg-sidebar-accent group"
                   )}
                   aria-current={isActive ? "page" : undefined}
                   aria-label={item.label}
@@ -84,7 +96,7 @@ export function NavigationPanel() {
                       "h-7 w-7",
                       isActive
                         ? "text-sidebar-primary-foreground"
-                        : "text-sidebar-foreground group-hover:text-sidebar-primary",
+                        : "text-sidebar-foreground group-hover:text-sidebar-primary"
                     )}
                   />
                 </Link>
@@ -105,7 +117,7 @@ export function NavigationPanel() {
                 <button
                   className={cn(
                     "w-15 h-15 flex items-center justify-center rounded-full transition-all",
-                    "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group",
+                    "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group"
                   )}
                   aria-label={item.label}
                 >

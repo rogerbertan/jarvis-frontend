@@ -6,42 +6,38 @@ import { TransactionForm } from "@/components/TransactionForm";
 import { TransactionList } from "@/components/TransactionList";
 import { MonthSelector } from "@/components/MonthSelector";
 import { TransactionStats } from "@/components/TransactionStats";
-import type {
-  IExpense,
-  IExpenseFormData,
-  IMonthOption,
-  IMonthlyStats,
-} from "@/types/expense";
-import { EXPENSE_CATEGORIES, getExpenseCategoryName } from "@/types/category";
+import type { IIncome, IIncomeFormData } from "@/types/income";
+import type { IMonthOption, IMonthlyStats } from "@/types/transaction";
+import { INCOME_CATEGORIES, getIncomeCategoryName } from "@/types/category";
 
-export default function ExpensesPage() {
-  // State for expenses (mocked data matching backend format)
-  const [expenses, setExpenses] = useState<IExpense[]>([
+export default function IncomesPage() {
+  // State for incomes (mocked data matching backend format)
+  const [incomes, setIncomes] = useState<IIncome[]>([
     {
       id: 1,
       account_id: 1,
       category_id: 1,
-      amount: 75.25,
-      description: "Barbeiro",
-      date: "2024-09-23T14:15:00",
+      amount: 5000.0,
+      description: "Salário de Setembro",
+      date: "2024-09-05T10:00:00",
       created_at: "2025-09-30T23:07:55.86522",
     },
     {
       id: 2,
       account_id: 1,
       category_id: 2,
-      amount: 150.0,
-      description: "Le Monde",
-      date: "2024-09-15T10:00:00",
+      amount: 1500.0,
+      description: "Projeto Freelance",
+      date: "2024-09-15T14:30:00",
       created_at: "2025-09-30T23:08:00.12345",
     },
     {
       id: 3,
       account_id: 1,
       category_id: 1,
-      amount: 45.8,
-      description: "Omega 3",
-      date: "2024-10-05T19:30:00",
+      amount: 5000.0,
+      description: "Salário de Outubro",
+      date: "2024-10-05T10:00:00",
       created_at: "2025-09-30T23:08:10.54321",
     },
   ]);
@@ -51,8 +47,8 @@ export default function ExpensesPage() {
   const availableMonths = useMemo((): IMonthOption[] => {
     const monthsSet = new Set<string>();
 
-    expenses.forEach((expense) => {
-      const date = new Date(expense.date);
+    incomes.forEach((income) => {
+      const date = new Date(income.date);
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
       monthsSet.add(monthKey);
     });
@@ -71,23 +67,23 @@ export default function ExpensesPage() {
           }),
         };
       });
-  }, [expenses]);
+  }, [incomes]);
 
-  const filteredExpenses = useMemo((): IExpense[] => {
+  const filteredIncomes = useMemo((): IIncome[] => {
     if (selectedMonth === "all") {
-      return expenses;
+      return incomes;
     }
 
-    return expenses.filter((expense) => {
-      const date = new Date(expense.date);
-      const expenseMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-      return expenseMonth === selectedMonth;
+    return incomes.filter((income) => {
+      const date = new Date(income.date);
+      const incomeMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+      return incomeMonth === selectedMonth;
     });
-  }, [expenses, selectedMonth]);
+  }, [incomes, selectedMonth]);
 
   const monthlyStats = useMemo((): IMonthlyStats => {
-    const total = filteredExpenses.reduce(
-      (sum, expense) => sum + expense.amount,
+    const total = filteredIncomes.reduce(
+      (sum, income) => sum + income.amount,
       0
     );
 
@@ -99,14 +95,14 @@ export default function ExpensesPage() {
 
     return {
       total,
-      count: filteredExpenses.length,
+      count: filteredIncomes.length,
       month: monthLabel,
     };
-  }, [filteredExpenses, selectedMonth, availableMonths]);
+  }, [filteredIncomes, selectedMonth, availableMonths]);
 
-  const handleAddExpense = (formData: IExpenseFormData) => {
-    const newExpense: IExpense = {
-      id: Math.max(0, ...expenses.map((e) => e.id)) + 1,
+  const handleAddIncome = (formData: IIncomeFormData) => {
+    const newIncome: IIncome = {
+      id: Math.max(0, ...incomes.map((i) => i.id)) + 1,
       account_id: 1,
       category_id: formData.category_id,
       amount: parseFloat(formData.amount),
@@ -115,11 +111,11 @@ export default function ExpensesPage() {
       created_at: new Date().toISOString(),
     };
 
-    setExpenses((prev) => [newExpense, ...prev]);
+    setIncomes((prev) => [newIncome, ...prev]);
   };
 
-  const handleDeleteExpense = (id: number) => {
-    setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+  const handleDeleteIncome = (id: number) => {
+    setIncomes((prev) => prev.filter((income) => income.id !== id));
   };
 
   return (
@@ -129,16 +125,16 @@ export default function ExpensesPage() {
         {/* Left column - Form and Stats */}
         <div className="space-y-6">
           <TransactionForm
-            type="expense"
-            categories={EXPENSE_CATEGORIES}
-            onAddTransaction={handleAddExpense}
-            title="Adicionar Nova Despesa"
-            buttonText="Adicionar Despesa"
+            type="income"
+            categories={INCOME_CATEGORIES}
+            onAddTransaction={handleAddIncome}
+            title="Adicionar Nova Receita"
+            buttonText="Adicionar Receita"
           />
           <TransactionStats
             stats={monthlyStats}
             title="Resumo Mensal"
-            countLabel="Total de Despesas"
+            countLabel="Total de Receitas"
           />
         </div>
 
@@ -150,12 +146,12 @@ export default function ExpensesPage() {
             onMonthChange={setSelectedMonth}
           />
           <TransactionList
-            type="expense"
-            transactions={filteredExpenses}
-            onDeleteTransaction={handleDeleteExpense}
-            getCategoryName={getExpenseCategoryName}
-            title="Lista de Despesas"
-            emptyMessage="Nenhuma despesa encontrada. Adicione sua primeira despesa acima."
+            type="income"
+            transactions={filteredIncomes}
+            onDeleteTransaction={handleDeleteIncome}
+            getCategoryName={getIncomeCategoryName}
+            title="Lista de Receitas"
+            emptyMessage="Nenhuma receita encontrada. Adicione sua primeira receita acima."
           />
         </div>
       </div>

@@ -20,15 +20,28 @@ import { Check, ChevronsUpDown, CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import type { IExpenseFormData } from "@/types/expense";
-import { EXPENSE_CATEGORIES, getCategoryName } from "@/types/category";
+import type {
+  ITransactionFormData,
+  TransactionType,
+} from "@/types/transaction";
+import type { ICategory } from "@/types/category";
 
-interface IAddExpenseFormProps {
-  onAddExpense: (expense: IExpenseFormData) => void;
+interface ITransactionFormProps {
+  type: TransactionType;
+  categories: ICategory[];
+  onAddTransaction: (transaction: ITransactionFormData) => void;
+  title: string;
+  buttonText: string;
 }
 
-export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
-  const [formData, setFormData] = useState<IExpenseFormData>({
+export function TransactionForm({
+  type,
+  categories,
+  onAddTransaction,
+  title,
+  buttonText,
+}: ITransactionFormProps) {
+  const [formData, setFormData] = useState<ITransactionFormData>({
     description: "",
     amount: "",
     date: new Date().toISOString().split("T")[0],
@@ -50,7 +63,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
       return;
     }
 
-    onAddExpense(formData);
+    onAddTransaction(formData);
 
     const newDate = new Date();
     setFormData({
@@ -62,10 +75,15 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
     setSelectedDate(newDate);
   };
 
+  const getCategoryName = (categoryId: number): string => {
+    const category = categories.find((cat) => cat.id === categoryId);
+    return category?.name ?? "Desconhecido";
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-heading">Adicionar Nova Despesa</CardTitle>
+        <CardTitle className="font-heading">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -79,7 +97,11 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
             <Input
               id="description"
               type="text"
-              placeholder="ex: Compras no mercado"
+              placeholder={
+                type === "expense"
+                  ? "ex: Compras no mercado"
+                  : "ex: Salário do mês"
+              }
               value={formData.description}
               onChange={(e) =>
                 setFormData({ ...formData, description: e.target.value })
@@ -114,7 +136,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
                   variant="outline"
                   className={cn(
                     "w-full justify-start text-left font-body",
-                    !selectedDate && "text-muted-foreground",
+                    !selectedDate && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -165,7 +187,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
                   <CommandList>
                     <CommandEmpty>Nenhuma categoria encontrada.</CommandEmpty>
                     <CommandGroup>
-                      {EXPENSE_CATEGORIES.map((category) => (
+                      {categories.map((category) => (
                         <CommandItem
                           key={category.id}
                           value={category.name}
@@ -182,7 +204,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
                               "mr-2 h-4 w-4",
                               formData.category_id === category.id
                                 ? "opacity-100"
-                                : "opacity-0",
+                                : "opacity-0"
                             )}
                           />
                           {category.name}
@@ -196,7 +218,7 @@ export function AddExpenseForm({ onAddExpense }: IAddExpenseFormProps) {
           </div>
 
           <Button type="submit" className="w-full">
-            Adicionar Despesa
+            {buttonText}
           </Button>
         </form>
       </CardContent>

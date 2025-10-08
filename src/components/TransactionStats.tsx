@@ -1,11 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { IMonthlyStats } from "@/types/expense";
+import type { IMonthlyStats } from "@/types/transaction";
 
-interface IExpenseStatsProps {
+interface ITransactionStatsProps {
   stats: IMonthlyStats;
+  title: string;
+  countLabel: string;
 }
 
-export function ExpenseStats({ stats }: IExpenseStatsProps) {
+export function TransactionStats({
+  stats,
+  title,
+  countLabel,
+}: ITransactionStatsProps) {
   const formatAmount = (amount: number): string => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -16,7 +22,7 @@ export function ExpenseStats({ stats }: IExpenseStatsProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-heading">Resumo Mensal</CardTitle>
+        <CardTitle className="font-heading">{title}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
@@ -30,7 +36,7 @@ export function ExpenseStats({ stats }: IExpenseStatsProps) {
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground font-body">
-              Total de Despesas
+              {countLabel}
             </span>
             <span className="text-lg font-semibold font-heading">
               {stats.count}

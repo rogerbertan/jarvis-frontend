@@ -9,15 +9,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { IExpense } from "@/types/expense";
-import { getCategoryName } from "@/types/category";
+import type { ITransaction, TransactionType } from "@/types/transaction";
 
-interface IExpenseListProps {
-  expenses: IExpense[];
-  onDeleteExpense: (id: number) => void;
+interface ITransactionListProps {
+  type: TransactionType;
+  transactions: ITransaction[];
+  onDeleteTransaction: (id: number) => void;
+  getCategoryName: (categoryId: number) => string;
+  title: string;
+  emptyMessage: string;
 }
 
-export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
+export function TransactionList({
+  type,
+  transactions,
+  onDeleteTransaction,
+  getCategoryName,
+  title,
+  emptyMessage,
+}: ITransactionListProps) {
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString("pt-BR", {
@@ -34,15 +44,15 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
     }).format(amount);
   };
 
-  if (expenses.length === 0) {
+  if (transactions.length === 0) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="font-heading">Lista de Despesas</CardTitle>
+          <CardTitle className="font-heading">{title}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-center text-muted-foreground py-8 font-body">
-            Nenhuma despesa encontrada. Adicione sua primeira despesa acima.
+            {emptyMessage}
           </p>
         </CardContent>
       </Card>
@@ -53,7 +63,7 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
     <Card>
       <CardHeader>
         <CardTitle className="font-heading">
-          Lista de Despesas ({expenses.length})
+          {title} ({transactions.length})
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -69,26 +79,30 @@ export function ExpenseList({ expenses, onDeleteExpense }: IExpenseListProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {expenses.map((expense) => (
-                <TableRow key={expense.id}>
+              {transactions.map((transaction) => (
+                <TableRow key={transaction.id}>
                   <TableCell className="font-medium font-body">
-                    {formatDate(expense.date)}
+                    {formatDate(transaction.date)}
                   </TableCell>
                   <TableCell className="font-body">
-                    {expense.description}
+                    {transaction.description}
                   </TableCell>
                   <TableCell className="font-body">
-                    {getCategoryName(expense.category_id)}
+                    {getCategoryName(transaction.category_id)}
                   </TableCell>
                   <TableCell className="text-right font-semibold font-heading">
-                    {formatAmount(expense.amount)}
+                    {formatAmount(transaction.amount)}
                   </TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
                       size="icon"
-                      onClick={() => onDeleteExpense(expense.id)}
-                      aria-label="Excluir despesa"
+                      onClick={() => onDeleteTransaction(transaction.id)}
+                      aria-label={
+                        type === "expense"
+                          ? "Excluir despesa"
+                          : "Excluir receita"
+                      }
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>

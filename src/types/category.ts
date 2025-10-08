@@ -21,9 +21,39 @@ export const EXPENSE_CATEGORIES: ICategory[] = [
 ];
 
 /**
- * Get category name by ID
+ * Predefined income categories in Portuguese
  */
-export function getCategoryName(categoryId: number): string {
+export const INCOME_CATEGORIES: ICategory[] = [
+  { id: 1, name: "Salário" },
+  { id: 2, name: "Freelance" },
+  { id: 3, name: "Investimentos" },
+  { id: 4, name: "Aluguel" },
+  { id: 5, name: "Vendas" },
+  { id: 6, name: "Bônus" },
+  { id: 7, name: "Presentes" },
+  { id: 8, name: "Outros" },
+];
+
+/**
+ * Get expense category name by ID
+ */
+export function getExpenseCategoryName(categoryId: number): string {
   const category = EXPENSE_CATEGORIES.find((cat) => cat.id === categoryId);
   return category?.name ?? "Desconhecido";
+}
+
+/**
+ * Get income category name by ID
+ */
+export function getIncomeCategoryName(categoryId: number): string {
+  const category = INCOME_CATEGORIES.find((cat) => cat.id === categoryId);
+  return category?.name ?? "Desconhecido";
+}
+
+/**
+ * Get category name by ID (legacy, uses expense categories)
+ * @deprecated Use getExpenseCategoryName or getIncomeCategoryName instead
+ */
+export function getCategoryName(categoryId: number): string {
+  return getExpenseCategoryName(categoryId);
 }
