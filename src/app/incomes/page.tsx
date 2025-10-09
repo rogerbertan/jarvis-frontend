@@ -19,7 +19,7 @@ export default function IncomesPage() {
       category_id: 1,
       amount: 5000.0,
       description: "Salário de Setembro",
-      date: "2024-09-05T10:00:00",
+      date: "2025-09-05T10:00:00",
       created_at: "2025-09-30T23:07:55.86522",
     },
     {
@@ -28,7 +28,7 @@ export default function IncomesPage() {
       category_id: 2,
       amount: 1500.0,
       description: "Projeto Freelance",
-      date: "2024-09-15T14:30:00",
+      date: "2025-09-15T14:30:00",
       created_at: "2025-09-30T23:08:00.12345",
     },
     {
@@ -37,7 +37,7 @@ export default function IncomesPage() {
       category_id: 1,
       amount: 5000.0,
       description: "Salário de Outubro",
-      date: "2024-10-05T10:00:00",
+      date: "2025-10-05T10:00:00",
       created_at: "2025-09-30T23:08:10.54321",
     },
   ]);

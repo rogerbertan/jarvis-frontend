@@ -23,7 +23,7 @@ export default function ExpensesPage() {
       category_id: 1,
       amount: 75.25,
       description: "Barbeiro",
-      date: "2024-09-23T14:15:00",
+      date: "2025-10-23T14:15:00",
       created_at: "2025-09-30T23:07:55.86522",
     },
     {
@@ -32,7 +32,7 @@ export default function ExpensesPage() {
       category_id: 2,
       amount: 150.0,
       description: "Le Monde",
-      date: "2024-09-15T10:00:00",
+      date: "2025-10-15T10:00:00",
       created_at: "2025-09-30T23:08:00.12345",
     },
     {
@@ -41,7 +41,7 @@ export default function ExpensesPage() {
       category_id: 1,
       amount: 45.8,
       description: "Omega 3",
-      date: "2024-10-05T19:30:00",
+      date: "2025-10-05T19:30:00",
       created_at: "2025-09-30T23:08:10.54321",
     },
   ]);
