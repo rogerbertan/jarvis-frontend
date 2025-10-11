@@ -39,7 +39,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               <p className="text-sm text-muted-foreground mb-1">
                 Total de Receitas
               </p>
-              <h3 className="text-2xl font-bold text-green-500">
+              <h3 className="text-2xl font-bold text-chart-2">
                 {formatCurrency(summary.totalIncomes)}
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
@@ -48,7 +48,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               </p>
             </div>
             <div className="p-2 bg-green-500/10 rounded-full">
-              <Wallet className="h-5 w-5 text-green-500" />
+              <Wallet className="h-5 w-5 text-chart-2" />
             </div>
           </div>
         </Card>
@@ -60,7 +60,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               <p className="text-sm text-muted-foreground mb-1">
                 Total de Despesas
               </p>
-              <h3 className="text-2xl font-bold text-red-500">
+              <h3 className="text-2xl font-bold text-chart-5">
                 {formatCurrency(summary.totalExpenses)}
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
@@ -69,7 +69,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               </p>
             </div>
             <div className="p-2 bg-red-500/10 rounded-full">
-              <DollarSign className="h-5 w-5 text-red-500" />
+              <DollarSign className="h-5 w-5 text-chart-5" />
             </div>
           </div>
         </Card>
@@ -82,7 +82,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                 Saldo Líquido
               </p>
               <h3
-                className={`text-2xl font-bold ${summary.netBalance >= 0 ? "text-green-500" : "text-red-500"}`}
+                className={`text-2xl font-bold ${summary.netBalance >= 0 ? "text-chart-2" : "text-chart-5"}`}
               >
                 {formatCurrency(summary.netBalance)}
               </h3>
@@ -94,9 +94,9 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               className={`p-2 rounded-full ${summary.netBalance >= 0 ? "bg-green-500/10" : "bg-red-500/10"}`}
             >
               {summary.netBalance >= 0 ? (
-                <TrendingUp className="h-5 w-5 text-green-500" />
+                <TrendingUp className="h-5 w-5 text-chart-2" />
               ) : (
-                <TrendingDown className="h-5 w-5 text-red-500" />
+                <TrendingDown className="h-5 w-5 text-chart-5" />
               )}
             </div>
           </div>
@@ -110,7 +110,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                 Taxa de Poupança
               </p>
               <h3
-                className={`text-2xl font-bold ${summary.savingsRate >= 0 ? "text-green-500" : "text-red-500"}`}
+                className={`text-2xl font-bold ${summary.savingsRate >= 0 ? "text-chart-2" : "text-chart-5"}`}
               >
                 {formatPercentage(summary.savingsRate)}
               </h3>
@@ -122,9 +122,9 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               className={`p-2 rounded-full ${summary.savingsRate >= 0 ? "bg-green-500/10" : "bg-red-500/10"}`}
             >
               {summary.savingsRate >= 0 ? (
-                <TrendingUp className="h-5 w-5 text-green-500" />
+                <TrendingUp className="h-5 w-5 text-chart-2" />
               ) : (
-                <TrendingDown className="h-5 w-5 text-red-500" />
+                <TrendingDown className="h-5 w-5 text-chart-5" />
               )}
             </div>
           </div>
@@ -140,7 +140,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               <span className="text-sm text-muted-foreground">
                 Receita Média
               </span>
-              <span className="font-medium text-green-500">
+              <span className="font-medium text-chart-2">
                 {formatCurrency(summary.averageIncome)}
               </span>
             </div>
@@ -148,7 +148,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               <span className="text-sm text-muted-foreground">
                 Despesa Média
               </span>
-              <span className="font-medium text-red-500">
+              <span className="font-medium text-chart-5">
                 {formatCurrency(summary.averageExpense)}
               </span>
             </div>
@@ -167,7 +167,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                       {trend.monthLabel}
                     </span>
                     <span
-                      className={`text-sm font-medium ${trend.netBalance >= 0 ? "text-green-500" : "text-red-500"}`}
+                      className={`text-sm font-medium ${trend.netBalance >= 0 ? "text-chart-2" : "text-chart-5"}`}
                     >
                       {formatCurrency(trend.netBalance)}
                     </span>
@@ -206,7 +206,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                     <TableCell className="font-medium">
                       {category.categoryName}
                     </TableCell>
-                    <TableCell className="text-right text-red-500">
+                    <TableCell className="text-right text-chart-5">
                       {formatCurrency(category.total)}
                     </TableCell>
                     <TableCell className="text-right">
@@ -243,7 +243,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                     <TableCell className="font-medium">
                       {category.categoryName}
                     </TableCell>
-                    <TableCell className="text-right text-green-500">
+                    <TableCell className="text-right text-chart-2">
                       {formatCurrency(category.total)}
                     </TableCell>
                     <TableCell className="text-right">
@@ -279,14 +279,14 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                   <TableCell className="font-medium">
                     {trend.monthLabel}
                   </TableCell>
-                  <TableCell className="text-right text-green-500">
+                  <TableCell className="text-right text-chart-2">
                     {formatCurrency(trend.totalIncomes)}
                   </TableCell>
-                  <TableCell className="text-right text-red-500">
+                  <TableCell className="text-right text-chart-5">
                     {formatCurrency(trend.totalExpenses)}
                   </TableCell>
                   <TableCell
-                    className={`text-right font-medium ${trend.netBalance >= 0 ? "text-green-500" : "text-red-500"}`}
+                    className={`text-right font-medium ${trend.netBalance >= 0 ? "text-chart-2" : "text-chart-5"}`}
                   >
                     {formatCurrency(trend.netBalance)}
                   </TableCell>

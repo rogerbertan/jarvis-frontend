@@ -139,6 +139,7 @@ export default function ExpensesPage() {
             stats={monthlyStats}
             title="Resumo Mensal"
             countLabel="Total de Despesas"
+            colorVariant="expense"
           />
         </div>
 

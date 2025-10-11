@@ -217,7 +217,7 @@ export function TransactionForm({
             </Popover>
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full font-bold">
             {buttonText}
           </Button>
         </form>

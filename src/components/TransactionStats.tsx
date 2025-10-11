@@ -1,16 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IMonthlyStats } from "@/types/transaction";
+import { cn } from "@/lib/utils";
 
 interface ITransactionStatsProps {
   stats: IMonthlyStats;
   title: string;
   countLabel: string;
+  colorVariant?: "income" | "expense";
 }
 
 export function TransactionStats({
   stats,
   title,
   countLabel,
+  colorVariant = "expense",
 }: ITransactionStatsProps) {
   const formatAmount = (amount: number): string => {
     return new Intl.NumberFormat("pt-BR", {
@@ -46,7 +49,12 @@ export function TransactionStats({
             <span className="text-sm text-muted-foreground font-body">
               Valor Total
             </span>
-            <span className="text-2xl font-bold text-primary font-heading">
+            <span
+              className={cn(
+                "text-2xl font-bold font-heading",
+                colorVariant === "income" ? "text-chart-2" : "text-chart-5"
+              )}
+            >
               {formatAmount(stats.total)}
             </span>
           </div>

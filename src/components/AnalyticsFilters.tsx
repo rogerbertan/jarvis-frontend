@@ -8,14 +8,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   FilterPeriod,
   TransactionTypeFilter,
   type IAnalyticsFilters,
 } from "@/types/analytics";
 import type { ICategory } from "@/types/category";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface IAnalyticsFiltersProps {
   filters: IAnalyticsFilters;
@@ -76,11 +85,18 @@ export function AnalyticsFilters({
     });
   };
 
-  const handleCustomDateChange = (type: "start" | "end", value: string) => {
+  const handleCustomDateChange = (
+    type: "start" | "end",
+    date: Date | undefined
+  ) => {
+    if (!date) return;
+
+    const formattedDate = format(date, "yyyy-MM-dd");
+
     onFiltersChange({
       ...filters,
       period: FilterPeriod.CUSTOM,
-      [type === "start" ? "customStartDate" : "customEndDate"]: value,
+      [type === "start" ? "customStartDate" : "customEndDate"]: formattedDate,
     });
   };
 
@@ -102,21 +118,16 @@ export function AnalyticsFilters({
   return (
     <Card className="p-6">
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Filtros</h2>
-          <Button variant="outline" size="sm" onClick={handleResetFilters}>
-            Limpar Filtros
-          </Button>
-        </div>
+        <h2 className="text-xl font-semibold">Filtros</h2>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-wrap gap-4 items-end">
           {/* Period Filter */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 w-[240px]">
             <label htmlFor="period-select" className="text-sm font-medium">
               Período
             </label>
             <Select value={filters.period} onValueChange={handlePeriodChange}>
-              <SelectTrigger id="period-select">
+              <SelectTrigger id="period-select" className="w-full">
                 <SelectValue placeholder="Selecione o período" />
               </SelectTrigger>
               <SelectContent>
@@ -130,7 +141,7 @@ export function AnalyticsFilters({
           </div>
 
           {/* Transaction Type Filter */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 w-[240px]">
             <label htmlFor="type-select" className="text-sm font-medium">
               Tipo de Transação
             </label>
@@ -138,7 +149,7 @@ export function AnalyticsFilters({
               value={filters.transactionType}
               onValueChange={handleTransactionTypeChange}
             >
-              <SelectTrigger id="type-select">
+              <SelectTrigger id="type-select" className="w-full">
                 <SelectValue placeholder="Selecione o tipo" />
               </SelectTrigger>
               <SelectContent>
@@ -156,36 +167,89 @@ export function AnalyticsFilters({
           {/* Custom Date Range - Start */}
           {filters.period === FilterPeriod.CUSTOM && (
             <>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="start-date" className="text-sm font-medium">
-                  Data Inicial
-                </label>
-                <Input
-                  id="start-date"
-                  type="date"
-                  value={filters.customStartDate || ""}
-                  onChange={(e) =>
-                    handleCustomDateChange("start", e.target.value)
-                  }
-                />
+              <div className="flex flex-col gap-2 w-[240px]">
+                <label className="text-sm font-medium">Data Inicial</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !filters.customStartDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {filters.customStartDate ? (
+                        format(new Date(filters.customStartDate), "PPP", {
+                          locale: ptBR,
+                        })
+                      ) : (
+                        <span>Selecione a data</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={
+                        filters.customStartDate
+                          ? new Date(filters.customStartDate)
+                          : undefined
+                      }
+                      onSelect={(date) => handleCustomDateChange("start", date)}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               {/* Custom Date Range - End */}
-              <div className="flex flex-col gap-2">
-                <label htmlFor="end-date" className="text-sm font-medium">
-                  Data Final
-                </label>
-                <Input
-                  id="end-date"
-                  type="date"
-                  value={filters.customEndDate || ""}
-                  onChange={(e) =>
-                    handleCustomDateChange("end", e.target.value)
-                  }
-                />
+              <div className="flex flex-col gap-2 w-[240px]">
+                <label className="text-sm font-medium">Data Final</label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !filters.customEndDate && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {filters.customEndDate ? (
+                        format(new Date(filters.customEndDate), "PPP", {
+                          locale: ptBR,
+                        })
+                      ) : (
+                        <span>Selecione a data</span>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={
+                        filters.customEndDate
+                          ? new Date(filters.customEndDate)
+                          : undefined
+                      }
+                      onSelect={(date) => handleCustomDateChange("end", date)}
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </>
           )}
+
+          {/* Clear Filters Button */}
+          <div className="flex items-end w-[240px]">
+            <Button
+              variant="default"
+              className="w-full font-bold"
+              onClick={handleResetFilters}
+            >
+              Limpar Filtros
+            </Button>
+          </div>
         </div>
 
         {/* Category Filter */}

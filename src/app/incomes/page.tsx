@@ -135,6 +135,7 @@ export default function IncomesPage() {
             stats={monthlyStats}
             title="Resumo Mensal"
             countLabel="Total de Receitas"
+            colorVariant="income"
           />
         </div>
 
