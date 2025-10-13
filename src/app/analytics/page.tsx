@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { AppLayout } from "@/components/AppLayout";
-import { AnalyticsFilters } from "@/components/AnalyticsFilters";
-import { AnalyticsDashboard } from "@/components/AnalyticsDashboard";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { AnalyticsFilters } from "@/components/analytics/AnalyticsFilters";
+import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
 import {
   FilterPeriod,
   TransactionTypeFilter,

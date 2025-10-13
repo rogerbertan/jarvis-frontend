@@ -1,5 +1,5 @@
-import { NavigationPanel } from "@/components/NavigationPanel";
-import { Header } from "@/components/Header";
+import { NavigationPanel } from "@/components/layout/NavigationPanel";
+import { Header } from "@/components/layout/Header";
 
 interface AppLayoutProps {
   children: React.ReactNode;

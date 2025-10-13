@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { AppLayout } from "@/components/AppLayout";
-import { DashboardCard } from "@/components/DashboardCard";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { DashboardCard } from "@/components/dashboard/DashboardCard";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { Wallet, TrendingUp, Calendar, ShoppingCart, Tag } from "lucide-react";
 import type { IExpense } from "@/types/expense";

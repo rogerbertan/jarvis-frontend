@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { AppLayout } from "@/components/AppLayout";
-import { TransactionForm } from "@/components/TransactionForm";
-import { TransactionList } from "@/components/TransactionList";
-import { MonthSelector } from "@/components/MonthSelector";
-import { TransactionStats } from "@/components/TransactionStats";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { TransactionForm } from "@/components/transaction/TransactionForm";
+import { TransactionList } from "@/components/transaction/TransactionList";
+import { MonthSelector } from "@/components/shared/MonthSelector";
+import { TransactionStats } from "@/components/transaction/TransactionStats";
 import type { IIncome, IIncomeFormData } from "@/types/income";
 import type { IMonthOption, IMonthlyStats } from "@/types/transaction";
 import { INCOME_CATEGORIES, getIncomeCategoryName } from "@/types/category";
