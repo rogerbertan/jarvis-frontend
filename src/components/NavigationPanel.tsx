@@ -44,6 +44,7 @@ export function NavigationPanel() {
     {
       id: "settings",
       icon: Settings,
+      href: "/settings",
     },
     {
       id: "logout",
@@ -111,18 +112,42 @@ export function NavigationPanel() {
         <ul className="space-y-6 flex flex-col items-center">
           {footerItems.map((item) => {
             const Icon = item.icon;
+            const isActive = pathname === item.href;
 
             return (
               <li key={item.id}>
-                <button
-                  className={cn(
-                    "w-15 h-15 flex items-center justify-center rounded-full transition-all",
-                    "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group"
-                  )}
-                  aria-label={item.label}
-                >
-                  <Icon className="h-7 w-7 text-sidebar-foreground group-hover:text-sidebar-primary" />
-                </button>
+                {item.href ? (
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "w-15 h-15 flex items-center justify-center rounded-full transition-all",
+                      isActive
+                        ? "bg-sidebar-primary text-sidebar-primary-foreground hover:bg-sidebar-primary/90"
+                        : "bg-gray-700 hover:bg-sidebar-accent group"
+                    )}
+                    aria-current={isActive ? "page" : undefined}
+                    aria-label={item.label}
+                  >
+                    <Icon
+                      className={cn(
+                        "h-7 w-7",
+                        isActive
+                          ? "text-sidebar-primary-foreground"
+                          : "text-sidebar-foreground group-hover:text-sidebar-primary"
+                      )}
+                    />
+                  </Link>
+                ) : (
+                  <button
+                    className={cn(
+                      "w-15 h-15 flex items-center justify-center rounded-full transition-all",
+                      "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group"
+                    )}
+                    aria-label={item.label}
+                  >
+                    <Icon className="h-7 w-7 text-sidebar-foreground group-hover:text-sidebar-primary" />
+                  </button>
+                )}
               </li>
             );
           })}
