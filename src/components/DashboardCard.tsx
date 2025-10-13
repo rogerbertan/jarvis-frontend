@@ -27,9 +27,7 @@ export function DashboardCard({
     <Card className="p-6">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-muted-foreground mb-2">
-            {title}
-          </p>
+          <p className="text-lg font-semibold text-foreground mb-2">{title}</p>
           <h3
             className={cn(
               "text-2xl font-bold mb-1",

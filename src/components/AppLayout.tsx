@@ -10,9 +10,9 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="min-h-screen bg-background">
       <NavigationPanel />
       <Header />
-      <div className="ml-[88px] pt-16 container mx-auto py-8 pl-10 max-w-6xl">
+      <main className="ml-[88px] pt-16 px-4 sm:px-6 md:px-8 lg:px-10 py-8 max-w-7xl">
         {children}
-      </div>
+      </main>
     </div>
   );
 }
