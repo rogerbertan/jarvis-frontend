@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { AnalyticsFilters } from "@/components/analytics/AnalyticsFilters";
 import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
 import {
@@ -340,12 +341,10 @@ export default function AnalyticsPage() {
 
   return (
     <AppLayout>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">Análises</h1>
-        <p className="text-muted-foreground">
-          Análise profunda de suas finanças
-        </p>
-      </div>
+      <PageHeader
+        title="Análises"
+        description="Análise profunda de suas finanças"
+      />
 
       <div className="space-y-6">
         <AnalyticsFilters

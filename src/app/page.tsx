@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { Wallet, TrendingUp, Calendar, ShoppingCart, Tag } from "lucide-react";
@@ -80,14 +81,10 @@ export default function Home() {
 
   return (
     <AppLayout>
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-foreground mb-2">
-          Bem-vindo ao Jarvis
-        </h1>
-        <p className="text-muted-foreground">
-          Seu assistente pessoal de controle de despesas
-        </p>
-      </div>
+      <PageHeader
+        title="Bem-vindo ao Jarvis"
+        description="Seu assistente pessoal de controle de despesas"
+      />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <DashboardCard
