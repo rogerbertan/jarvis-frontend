@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/shared/PageHeader";
 import { TransactionForm } from "@/components/transaction/TransactionForm";
 import { TransactionList } from "@/components/transaction/TransactionList";
 import { MonthSelector } from "@/components/shared/MonthSelector";
@@ -120,8 +121,11 @@ export default function IncomesPage() {
 
   return (
     <AppLayout>
-      <div className="mb-8"></div>
-      <div className="grid gap-6 lg:grid-cols-3">
+      <PageHeader
+        title="Receitas"
+        description="Gerencie suas receitas e acompanhe suas entradas"
+      />
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
         {/* Left column - Form and Stats */}
         <div className="space-y-6">
           <TransactionForm
