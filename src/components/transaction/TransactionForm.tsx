@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { NumericFormat } from "react-number-format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -114,16 +115,20 @@ export function TransactionForm({
             <label htmlFor="amount" className="text-sm font-medium font-body">
               Valor
             </label>
-            <Input
+            <NumericFormat
               id="amount"
-              type="number"
-              step="0.01"
-              min="0.01"
-              placeholder="0,00"
+              customInput={Input}
+              prefix="R$ "
+              thousandSeparator="."
+              decimalSeparator=","
+              decimalScale={2}
+              fixedDecimalScale
+              allowNegative={false}
+              placeholder="R$ 0,00"
               value={formData.amount}
-              onChange={(e) =>
-                setFormData({ ...formData, amount: e.target.value })
-              }
+              onValueChange={(values) => {
+                setFormData({ ...formData, amount: values.value });
+              }}
               required
             />
           </div>
