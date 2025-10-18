@@ -1,88 +1,51 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { useSearchParams } from "next/navigation";
+import { signIn } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-  const supabase = createClient();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (signInError) {
-        if (signInError.message.includes("Invalid login credentials")) {
-          setError("Email ou senha inválidos");
-        } else if (signInError.message.includes("Email not confirmed")) {
-          setError("Por favor, confirme seu email antes de fazer login");
-        } else {
-          setError("Erro ao fazer login. Tente novamente.");
-        }
-        return;
-      }
-
-      if (data.user) {
-        router.push("/");
-        router.refresh();
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("Erro ao conectar. Tente novamente.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+  const message = searchParams.get("message");
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form action={signIn} className="space-y-4">
       {error && (
         <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-900 rounded-md">
           {error}
+        </div>
+      )}
+      {message && (
+        <div className="p-3 text-sm text-green-600 bg-green-50 dark:bg-green-950/50 dark:text-green-400 border border-green-200 dark:border-green-900 rounded-md">
+          {message}
         </div>
       )}
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
           id="email"
+          name="email"
           type="email"
           placeholder="seu@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           required
-          disabled={isLoading}
         />
       </div>
       <div className="space-y-2">
         <Label htmlFor="password">Senha</Label>
         <Input
           id="password"
+          name="password"
           type="password"
           placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
           required
-          disabled={isLoading}
           minLength={6}
         />
       </div>
-      <Button type="submit" className="w-full" disabled={isLoading}>
-        {isLoading ? "Entrando..." : "Entrar"}
+      <Button type="submit" className="w-full">
+        Entrar
       </Button>
     </form>
   );
