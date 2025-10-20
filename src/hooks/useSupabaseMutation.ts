@@ -1,12 +1,14 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { Database } from '@/types/supabase'
+import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { Database } from "@/types/supabase";
 
-type TableName = keyof Database['public']['Tables']
-type InsertData<T extends TableName> = Database['public']['Tables'][T]['Insert']
-type UpdateData<T extends TableName> = Database['public']['Tables'][T]['Update']
+type TableName = keyof Database["public"]["Tables"];
+type InsertData<T extends TableName> =
+  Database["public"]["Tables"][T]["Insert"];
+type UpdateData<T extends TableName> =
+  Database["public"]["Tables"][T]["Update"];
 
 /**
  * Hook for mutating data in Supabase (insert, update, delete)
@@ -50,51 +52,55 @@ type UpdateData<T extends TableName> = Database['public']['Tables'][T]['Update']
  * ```
  */
 export function useSupabaseMutation<T extends TableName>(table: T) {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
-  const supabase = createClient()
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const supabase = createClient();
 
   const insert = async (data: InsertData<T>) => {
     try {
-      setLoading(true)
-      setError(null)
-      const result = await supabase.from(table).insert(data).select()
-      return result
+      setLoading(true);
+      setError(null);
+      const result = await supabase.from(table).insert(data).select();
+      return result;
     } catch (err) {
-      setError(err as Error)
-      return { data: null, error: err }
+      setError(err as Error);
+      return { data: null, error: err };
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const update = async (id: string, data: UpdateData<T>) => {
     try {
-      setLoading(true)
-      setError(null)
-      const result = await supabase.from(table).update(data).eq('id', id).select()
-      return result
+      setLoading(true);
+      setError(null);
+      const result = await supabase
+        .from(table)
+        .update(data)
+        .eq("id", id)
+        .select();
+      return result;
     } catch (err) {
-      setError(err as Error)
-      return { data: null, error: err }
+      setError(err as Error);
+      return { data: null, error: err };
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const remove = async (id: string) => {
     try {
-      setLoading(true)
-      setError(null)
-      const result = await supabase.from(table).delete().eq('id', id)
-      return result
+      setLoading(true);
+      setError(null);
+      const result = await supabase.from(table).delete().eq("id", id);
+      return result;
     } catch (err) {
-      setError(err as Error)
-      return { data: null, error: err }
+      setError(err as Error);
+      return { data: null, error: err };
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  return { insert, update, remove, loading, error }
+  return { insert, update, remove, loading, error };
 }

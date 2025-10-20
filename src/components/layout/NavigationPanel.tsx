@@ -13,9 +13,14 @@ import {
 } from "lucide-react";
 import type { INavigationItem } from "@/types/navigation";
 import { cn } from "@/lib/utils";
+import { signOut } from "@/lib/supabase/auth";
 
 export function NavigationPanel() {
   const pathname = usePathname();
+
+  const handleLogout = async () => {
+    await signOut();
+  };
 
   const navigationItems: INavigationItem[] = [
     {
@@ -139,6 +144,7 @@ export function NavigationPanel() {
                   </Link>
                 ) : (
                   <button
+                    onClick={item.id === "logout" ? handleLogout : undefined}
                     className={cn(
                       "w-15 h-15 flex items-center justify-center rounded-full transition-all",
                       "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group"

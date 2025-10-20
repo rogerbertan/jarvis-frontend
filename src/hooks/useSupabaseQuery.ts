@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { Database } from '@/types/supabase'
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { Database } from "@/types/supabase";
 
-type TableName = keyof Database['public']['Tables']
+type TableName = keyof Database["public"]["Tables"];
 
 /**
  * Hook for fetching data from Supabase with RLS (Row Level Security)
@@ -40,41 +40,43 @@ type TableName = keyof Database['public']['Tables']
  */
 export function useSupabaseQuery<T extends TableName>(
   table: T,
-  query?: (q: ReturnType<ReturnType<typeof createClient>['from']>) => any
+  query?: (q: ReturnType<ReturnType<typeof createClient>["from"]>) => any
 ) {
-  const [data, setData] = useState<Database['public']['Tables'][T]['Row'][] | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
-  const supabase = createClient()
+  const [data, setData] = useState<
+    Database["public"]["Tables"][T]["Row"][] | null
+  >(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const supabase = createClient();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true)
-        let queryBuilder = supabase.from(table)
+        setLoading(true);
+        let queryBuilder = supabase.from(table);
 
         if (query) {
-          queryBuilder = query(queryBuilder)
+          queryBuilder = query(queryBuilder);
         } else {
-          queryBuilder = queryBuilder.select('*')
+          queryBuilder = queryBuilder.select("*");
         }
 
-        const { data: result, error: queryError } = await queryBuilder
+        const { data: result, error: queryError } = await queryBuilder;
 
         if (queryError) {
-          setError(queryError)
+          setError(queryError);
         } else {
-          setData(result)
+          setData(result);
         }
       } catch (err) {
-        setError(err as Error)
+        setError(err as Error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchData()
-  }, [table, query, supabase])
+    fetchData();
+  }, [table, query, supabase]);
 
-  return { data, loading, error, refetch: () => setLoading(true) }
+  return { data, loading, error, refetch: () => setLoading(true) };
 }

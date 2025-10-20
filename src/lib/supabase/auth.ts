@@ -1,8 +1,8 @@
-'use server'
+"use server";
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
-import { createClient } from './server'
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { createClient } from "./server";
 
 /**
  * Server Actions for Supabase Authentication
@@ -15,134 +15,136 @@ import { createClient } from './server'
  * Sign in with email and password
  */
 export async function signIn(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
   const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
-  }
+    email: formData.get("email") as string,
+    password: formData.get("password") as string,
+  };
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    redirect('/login?error=Invalid credentials')
+    redirect("/login?error=Credenciais inválidas");
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  revalidatePath("/", "layout");
+  redirect("/");
 }
 
 /**
  * Sign up with email and password
  */
 export async function signUp(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
   const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email: formData.get("email") as string,
+    password: formData.get("password") as string,
     options: {
       data: {
-        full_name: formData.get('full_name') as string,
+        full_name: formData.get("full_name") as string,
       },
     },
-  }
+  };
 
-  const { error } = await supabase.auth.signUp(data)
+  const { error } = await supabase.auth.signUp(data);
 
   if (error) {
-    redirect('/register?error=' + encodeURIComponent(error.message))
+    redirect("/register?error=" + encodeURIComponent(error.message));
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/login?message=Check your email to confirm your account')
+  revalidatePath("/", "layout");
+  redirect("/login?message=Verifique seu e-mail para confirmar sua conta");
 }
 
 /**
  * Sign out the current user
  */
 export async function signOut() {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
-  const { error } = await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut();
 
   if (error) {
-    redirect('/?error=' + encodeURIComponent(error.message))
+    redirect("/?error=" + encodeURIComponent(error.message));
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/login')
+  revalidatePath("/", "layout");
+  redirect("/login");
 }
 
 /**
  * Get the current authenticated user
  */
 export async function getUser() {
-  const supabase = await createClient()
+  const supabase = await createClient();
   const {
     data: { user },
     error,
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   if (error) {
-    return null
+    return null;
   }
 
-  return user
+  return user;
 }
 
 /**
  * Get the current user's session
  */
 export async function getSession() {
-  const supabase = await createClient()
+  const supabase = await createClient();
   const {
     data: { session },
     error,
-  } = await supabase.auth.getSession()
+  } = await supabase.auth.getSession();
 
   if (error) {
-    return null
+    return null;
   }
 
-  return session
+  return session;
 }
 
 /**
  * Update user password
  */
 export async function updatePassword(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
-  const newPassword = formData.get('new_password') as string
+  const newPassword = formData.get("new_password") as string;
 
   const { error } = await supabase.auth.updateUser({
     password: newPassword,
-  })
+  });
 
   if (error) {
-    redirect('/settings?error=' + encodeURIComponent(error.message))
+    redirect("/settings?error=" + encodeURIComponent(error.message));
   }
 
-  revalidatePath('/settings')
-  redirect('/settings?message=Password updated successfully')
+  revalidatePath("/settings");
+  redirect("/settings?message=Senha atualizada com sucesso");
 }
 
 /**
  * Reset password request
  */
 export async function resetPassword(formData: FormData) {
-  const supabase = await createClient()
+  const supabase = await createClient();
 
-  const email = formData.get('email') as string
+  const email = formData.get("email") as string;
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/reset-password`,
-  })
+  });
 
   if (error) {
-    redirect('/forgot-password?error=' + encodeURIComponent(error.message))
+    redirect("/forgot-password?error=" + encodeURIComponent(error.message));
   }
 
-  redirect('/forgot-password?message=Check your email for password reset link')
+  redirect(
+    "/forgot-password?message=Verifique seu e-mail para o link de redefinição de senha"
+  );
 }

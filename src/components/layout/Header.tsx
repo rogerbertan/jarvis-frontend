@@ -1,3 +1,5 @@
+"use client";
+
 import { User, Settings, HelpCircle, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -8,11 +10,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { signOut } from "@/lib/supabase/auth";
 
 export function Header() {
   const handleMenuAction = (action: string) => {
     console.log(`${action} clicked`);
     // TODO: Implement actual actions
+  };
+
+  const handleLogout = async () => {
+    await signOut();
   };
 
   return (
@@ -66,7 +73,7 @@ export function Header() {
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
-              onClick={() => handleMenuAction("logout")}
+              onClick={handleLogout}
               className="cursor-pointer text-destructive focus:text-destructive"
             >
               <LogOut className="mr-2 h-4 w-4" />
