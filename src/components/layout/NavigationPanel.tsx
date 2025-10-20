@@ -13,22 +13,9 @@ import {
 } from "lucide-react";
 import type { INavigationItem } from "@/types/navigation";
 import { cn } from "@/lib/utils";
-import { signOut } from "@/lib/auth";
-import { useState } from "react";
 
 export function NavigationPanel() {
   const pathname = usePathname();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const handleLogout = async () => {
-    try {
-      setIsLoggingOut(true);
-      await signOut();
-    } catch (err) {
-      console.error("Erro ao fazer logout:", err);
-      setIsLoggingOut(false);
-    }
-  };
 
   const navigationItems: INavigationItem[] = [
     {
@@ -152,14 +139,11 @@ export function NavigationPanel() {
                   </Link>
                 ) : (
                   <button
-                    onClick={item.id === "logout" ? handleLogout : undefined}
-                    disabled={isLoggingOut}
                     className={cn(
                       "w-15 h-15 flex items-center justify-center rounded-full transition-all",
-                      "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group",
-                      isLoggingOut && "opacity-50 cursor-not-allowed"
+                      "bg-gray-700 hover:bg-sidebar-accent text-sidebar-foreground group"
                     )}
-                    aria-label={item.id === "logout" ? "Sair" : item.label}
+                    aria-label={item.label}
                   >
                     <Icon className="h-7 w-7 text-sidebar-foreground group-hover:text-sidebar-primary" />
                   </button>
