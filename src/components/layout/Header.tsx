@@ -10,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { signOut } from "@/lib/supabase/auth";
 
 export function Header() {
   const handleMenuAction = (action: string) => {
@@ -18,8 +17,9 @@ export function Header() {
     // TODO: Implement actual actions
   };
 
-  const handleLogout = async () => {
-    await signOut();
+  const handleLogout = () => {
+    // TODO: Implement logout logic
+    console.log("Logout clicked");
   };
 
   return (

@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,42 +10,20 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
-    try {
-      const { data, error: signInError } =
-        await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+    // TODO: Implement authentication logic
+    console.log("Login attempt:", { email, password });
 
-      if (signInError) {
-        if (signInError.message.includes("Invalid login credentials")) {
-          setError("Email ou senha inválidos");
-        } else if (signInError.message.includes("Email not confirmed")) {
-          setError("Por favor, confirme seu email antes de fazer login");
-        } else {
-          setError("Erro ao fazer login. Tente novamente.");
-        }
-        return;
-      }
-
-      if (data.user) {
-        router.push("/");
-        router.refresh();
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("Erro ao conectar. Tente novamente.");
-    } finally {
+    // Placeholder - remove when implementing real auth
+    setTimeout(() => {
+      setError("Autenticação não configurada");
       setIsLoading(false);
-    }
+    }, 1000);
   };
 
   return (

@@ -1,9 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import { createUserProfile } from "@/lib/supabase/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,8 +12,6 @@ export function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-  const supabase = createClient();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,49 +36,14 @@ export function RegisterForm() {
       return;
     }
 
-    try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: name.trim(),
-          },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
+    // TODO: Implement authentication logic
+    console.log("Register attempt:", { name, email, password });
 
-      if (signUpError) {
-        if (signUpError.message.includes("already registered")) {
-          setError("Este email já está cadastrado");
-        } else if (signUpError.message.includes("Password should be")) {
-          setError("A senha deve ter no mínimo 6 caracteres");
-        } else {
-          setError("Erro ao criar conta. Tente novamente.");
-        }
-        return;
-      }
-
-      if (data.user) {
-        try {
-          await createUserProfile(data.user.id, email, name.trim());
-        } catch (profileError) {
-          console.error("Error creating profile:", profileError);
-          setError(
-            "Conta criada, mas houve um erro ao configurar o perfil. Por favor, entre em contato com o suporte."
-          );
-          return;
-        }
-
-        router.push("/");
-        router.refresh();
-      }
-    } catch (err) {
-      console.error("Registration error:", err);
-      setError("Erro ao conectar. Tente novamente.");
-    } finally {
+    // Placeholder - remove when implementing real auth
+    setTimeout(() => {
+      setError("Autenticação não configurada");
       setIsLoading(false);
-    }
+    }, 1000);
   };
 
   return (
