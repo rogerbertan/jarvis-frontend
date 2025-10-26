@@ -1,43 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { registerSchema, type RegisterFormData } from "@/schemas/auth";
 
 export function RegisterForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
+
+  const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     setError(null);
 
-    if (password !== confirmPassword) {
-      setError("As senhas não coincidem");
-      setIsLoading(false);
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("A senha deve ter no mínimo 6 caracteres");
-      setIsLoading(false);
-      return;
-    }
-
-    if (!name.trim()) {
-      setError("Por favor, insira seu nome");
-      setIsLoading(false);
-      return;
-    }
-
     // TODO: Implement authentication logic
-    console.log("Register attempt:", { name, email, password });
+    console.log("Register attempt:", data);
 
     // Placeholder - remove when implementing real auth
     setTimeout(() => {
@@ -47,7 +35,7 @@ export function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {error && (
         <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-900 rounded-md">
           {error}
@@ -59,11 +47,14 @@ export function RegisterForm() {
           id="name"
           type="text"
           placeholder="Seu nome"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
+          {...register("name")}
           disabled={isLoading}
         />
+        {errors.name && (
+          <p className="text-sm text-red-600 dark:text-red-400">
+            {errors.name.message}
+          </p>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
@@ -71,11 +62,14 @@ export function RegisterForm() {
           id="email"
           type="email"
           placeholder="seu@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+          {...register("email")}
           disabled={isLoading}
         />
+        {errors.email && (
+          <p className="text-sm text-red-600 dark:text-red-400">
+            {errors.email.message}
+          </p>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="password">Senha</Label>
@@ -83,12 +77,14 @@ export function RegisterForm() {
           id="password"
           type="password"
           placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          {...register("password")}
           disabled={isLoading}
-          minLength={6}
         />
+        {errors.password && (
+          <p className="text-sm text-red-600 dark:text-red-400">
+            {errors.password.message}
+          </p>
+        )}
       </div>
       <div className="space-y-2">
         <Label htmlFor="confirmPassword">Confirmar senha</Label>
@@ -96,12 +92,14 @@ export function RegisterForm() {
           id="confirmPassword"
           type="password"
           placeholder="••••••••"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
+          {...register("confirmPassword")}
           disabled={isLoading}
-          minLength={6}
         />
+        {errors.confirmPassword && (
+          <p className="text-sm text-red-600 dark:text-red-400">
+            {errors.confirmPassword.message}
+          </p>
+        )}
       </div>
       <Button type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Criando conta..." : "Criar conta"}
