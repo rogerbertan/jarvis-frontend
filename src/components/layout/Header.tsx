@@ -23,7 +23,7 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-[88px] right-0 h-18 bg-sidebar">
+    <header className="fixed top-0 left-[88px] right-0 h-18 bg-sidebar/50 backdrop-blur-md border-b border-sidebar-border/10 shadow-sm">
       <div className="h-full px-6 flex items-center justify-between">
         {/* Left: Application Title */}
         <div>
