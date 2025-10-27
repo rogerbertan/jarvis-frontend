@@ -35,6 +35,14 @@ export async function signup(name: string, email: string, password: string) {
   });
 
   if (error) {
+    console.error("Auth signup error:", error);
+    if (error.message.includes("User already registered")) {
+      return {
+        error:
+          "Este email já está registrado. Por favor, faça login ou use outro email.",
+        success: false,
+      };
+    }
     return { error: error.message, success: false };
   }
 
@@ -47,6 +55,14 @@ export async function signup(name: string, email: string, password: string) {
 
     if (profileError) {
       console.error("Profile creation error:", profileError);
+
+      if (profileError.code === "23505") {
+        return {
+          error: "Usuário já existe no sistema. Por favor, faça login.",
+          success: false,
+        };
+      }
+
       return {
         error: `Erro ao criar perfil: ${profileError.message}`,
         success: false,
