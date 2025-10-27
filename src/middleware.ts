@@ -1,4 +1,5 @@
-import { MiddlewareConfig, NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
 
 const publicRoutes = [
   { path: "/login", whenAuthenticated: "redirect" },
@@ -7,46 +8,33 @@ const publicRoutes = [
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = "/login";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const publicRoute = publicRoutes.find((route) => route.path === path);
-  const authToken = request.cookies.get("token");
 
-  if (!authToken && publicRoute) {
-    return NextResponse.next();
-  }
+  const { supabaseResponse, user } = await updateSession(request);
 
-  if (!authToken && !publicRoute) {
+  if (!user) {
+    if (publicRoute) {
+      return supabaseResponse;
+    }
+
     const redirectUrl = request.nextUrl.clone();
-
     redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
-
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (
-    authToken &&
-    publicRoute &&
-    publicRoute.whenAuthenticated === "redirect"
-  ) {
+  if (user && publicRoute && publicRoute.whenAuthenticated === "redirect") {
     const redirectUrl = request.nextUrl.clone();
-
     redirectUrl.pathname = "/";
-
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (authToken && !publicRoute) {
-    //TODO: testar se token esta expirado (se SIM, remove o cookie e redireciona para login)
-
-    return NextResponse.next();
-  }
-
-  return NextResponse.next();
+  return supabaseResponse;
 }
 
-export const config: MiddlewareConfig = {
+export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+    "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

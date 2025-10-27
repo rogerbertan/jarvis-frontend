@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { loginSchema, type LoginFormData } from "@/schemas/auth";
 
 export function LoginForm() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,14 +26,21 @@ export function LoginForm() {
     setIsLoading(true);
     setError(null);
 
-    // TODO: Implement authentication logic
-    console.log("Login attempt:", data);
+    try {
+      const { login } = await import("@/actions/auth");
+      const result = await login(data.email, data.password);
 
-    // Placeholder - remove when implementing real auth
-    setTimeout(() => {
-      setError("Autenticação não configurada");
+      if (result?.error) {
+        setError(result.error);
+        setIsLoading(false);
+      } else if (result?.success) {
+        router.push("/");
+        router.refresh();
+      }
+    } catch {
+      setError("Erro ao fazer login. Tente novamente.");
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
