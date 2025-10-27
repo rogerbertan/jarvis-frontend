@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { logout } from "@/actions/auth";
 
 export function Header() {
   const handleMenuAction = (action: string) => {
@@ -17,9 +18,8 @@ export function Header() {
     // TODO: Implement actual actions
   };
 
-  const handleLogout = () => {
-    // TODO: Implement logout logic
-    console.log("Logout clicked");
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (

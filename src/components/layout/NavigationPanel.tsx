@@ -13,13 +13,13 @@ import {
 } from "lucide-react";
 import type { INavigationItem } from "@/types/navigation";
 import { cn } from "@/lib/utils";
+import { logout } from "@/actions/auth";
 
 export function NavigationPanel() {
   const pathname = usePathname();
 
   const handleLogout = async () => {
-    // TODO: Implement logout logic
-    console.log("Logout clicked");
+    await logout();
   };
 
   const navigationItems: INavigationItem[] = [
