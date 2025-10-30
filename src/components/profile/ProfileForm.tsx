@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
+import { ProfileAvatar } from "./ProfileAvatar";
 
 interface ProfileFormProps {
   user: IUserProfile;
@@ -22,6 +23,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<IProfileSchema>({
     resolver: zodResolver(profileSchema),
@@ -30,6 +32,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
       avatar_url: user.avatar_url,
     },
   });
+
+  const fullName = watch("full_name");
+  const avatarUrl = watch("avatar_url");
 
   const onSubmit = async (data: IProfileSchema) => {
     setIsLoading(true);
@@ -60,6 +65,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
           {error}
         </div>
       )}
+      <div className="flex justify-center py-2">
+        <ProfileAvatar avatarUrl={avatarUrl} fullName={fullName} size="lg" />
+      </div>
       <div className="space-y-2">
         <Label htmlFor="full_name">Nome</Label>
         <Input
@@ -90,9 +98,15 @@ export function ProfileForm({ user }: ProfileFormProps) {
           </p>
         )}
       </div>
-      <Button type="submit" disabled={isLoading} className="w-full">
-        {isLoading ? "Salvando..." : "Salvar Alterações"}
-      </Button>
+      <div className="flex flex-col items-center">
+        <Button
+          type="submit"
+          disabled={isLoading}
+          className="px-8 mt-4 rounded-full"
+        >
+          {isLoading ? "Salvando..." : "Salvar Alterações"}
+        </Button>
+      </div>
     </form>
   );
 }

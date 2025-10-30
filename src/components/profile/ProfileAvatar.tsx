@@ -25,7 +25,7 @@ export function ProfileAvatar({
   const initials = getInitials(fullName);
 
   const sizeClasses = {
-    sm: "w-8 h-8 text-xs",
+    sm: "w-12 h-12 text-xs",
     md: "w-24 h-24 text-2xl",
     lg: "w-36 h-36 text-6xl",
   };

@@ -1,5 +1,3 @@
-"use client";
-
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { SettingsCard } from "@/components/settings/SettingsCard";
@@ -7,10 +5,13 @@ import { SettingsToggle } from "@/components/settings/SettingsToggle";
 import { SettingsSelect } from "@/components/settings/SettingsSelect";
 import { Separator } from "@/components/ui/separator";
 import { Globe, Moon, Bell, Lock } from "lucide-react";
+import { getUserProfile } from "@/actions/profile";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const { data: user } = await getUserProfile();
+
   return (
-    <AppLayout>
+    <AppLayout user={user || undefined}>
       <PageHeader
         title="Configurações"
         description="Personalize sua experiência no Jarvis"

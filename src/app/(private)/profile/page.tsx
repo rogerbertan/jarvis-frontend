@@ -4,7 +4,6 @@ import { getUserProfile } from "@/actions/profile";
 import { Card, CardContent } from "@/components/ui/card";
 import { redirect } from "next/navigation";
 import { ProfileForm } from "@/components/profile/ProfileForm";
-import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 
 export default async function ProfilePage() {
   const { success, data } = await getUserProfile();
@@ -14,7 +13,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <AppLayout>
+    <AppLayout user={data}>
       <PageHeader
         title="Perfil"
         description="Gerencie suas informações de perfil"
@@ -22,11 +21,6 @@ export default async function ProfilePage() {
       <div className="grid gap-6 max-w-4xl">
         <Card>
           <CardContent className="flex flex-col gap-6">
-            <ProfileAvatar
-              avatarUrl={data.avatar_url}
-              fullName={data.full_name}
-              size="lg"
-            />
             <ProfileForm user={data} />
           </CardContent>
         </Card>

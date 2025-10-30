@@ -1,7 +1,6 @@
 "use client";
 
 import { User, Settings, HelpCircle, LogOut } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,12 +9,33 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 import { logout } from "@/actions/auth";
+import { ProfileAvatar } from "../profile/ProfileAvatar";
 
-export function Header() {
+export interface HeaderProps {
+  user?: {
+    full_name: string;
+    avatar_url?: string;
+  };
+}
+
+export function Header({ user }: HeaderProps = { user: undefined }) {
+  const router = useRouter();
+
   const handleMenuAction = (action: string) => {
-    console.log(`${action} clicked`);
-    // TODO: Implement actual actions
+    switch (action) {
+      case "profile":
+        router.push("/profile");
+        break;
+      case "settings":
+        router.push("/settings");
+        break;
+      case "help":
+        // TODO: Implement help page
+        console.log("Help clicked");
+        break;
+    }
   };
 
   const handleLogout = async () => {
@@ -39,12 +59,11 @@ export function Header() {
               className="flex items-center gap-3 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-full"
               aria-label="Menu do usuário"
             >
-              <Avatar className="h-10 w-10 cursor-pointer mt-2">
-                <AvatarImage src="/avatar.jpeg" alt="User" />
-                <AvatarFallback className="bg-primary text-primary-foreground">
-                  RB
-                </AvatarFallback>
-              </Avatar>
+              <ProfileAvatar
+                avatarUrl={user?.avatar_url}
+                fullName={user?.full_name || "Usuário"}
+                size="sm"
+              />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
