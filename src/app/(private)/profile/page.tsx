@@ -1,9 +1,10 @@
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { getUserProfile } from "@/actions/profile";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { redirect } from "next/navigation";
 import { ProfileForm } from "@/components/profile/ProfileForm";
+import { ProfileAvatar } from "@/components/profile/ProfileAvatar";
 
 export default async function ProfilePage() {
   const { success, data } = await getUserProfile();
@@ -20,10 +21,12 @@ export default async function ProfilePage() {
       ></PageHeader>
       <div className="grid gap-6 max-w-4xl">
         <Card>
-          <CardHeader>
-            <CardTitle>Informações do Perfil</CardTitle>
-          </CardHeader>
-          <CardContent>
+          <CardContent className="flex flex-col gap-6">
+            <ProfileAvatar
+              avatarUrl={data.avatar_url}
+              fullName={data.full_name}
+              size="lg"
+            />
             <ProfileForm user={data} />
           </CardContent>
         </Card>
