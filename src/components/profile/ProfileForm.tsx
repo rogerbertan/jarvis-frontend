@@ -6,9 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { User, Image } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { ProfileAvatar } from "./ProfileAvatar";
 
 interface ProfileFormProps {
@@ -59,54 +61,84 @@ export function ProfileForm({ user }: ProfileFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {error && (
-        <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-900 rounded-md">
-          {error}
-        </div>
-      )}
-      <div className="flex justify-center py-2">
-        <ProfileAvatar avatarUrl={avatarUrl} fullName={fullName} size="lg" />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="full_name">Nome</Label>
-        <Input
-          id="full_name"
-          type="text"
-          placeholder="Roger Bertan"
-          {...register("full_name")}
-          disabled={isLoading}
-        />
-        {errors.full_name && (
-          <p className="text-sm text-red-600 dark:text-red-400">
-            {errors.full_name.message}
-          </p>
-        )}
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="avatar_url">Avatar URL</Label>
-        <Input
-          id="avatar_url"
-          type="text"
-          placeholder="https://example.com/avatar.jpg"
-          {...register("avatar_url")}
-          disabled={isLoading}
-        />
-        {errors.avatar_url && (
-          <p className="text-sm text-red-600 dark:text-red-400">
-            {errors.avatar_url.message}
-          </p>
-        )}
-      </div>
-      <div className="flex flex-col items-center">
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="px-8 mt-4 rounded-full"
-        >
-          {isLoading ? "Salvando..." : "Salvar Alterações"}
-        </Button>
-      </div>
-    </form>
+    <Card>
+      <CardHeader>
+        <CardTitle>Informações Pessoais</CardTitle>
+        <CardDescription>
+          Atualize suas informações de perfil
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {error && (
+            <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-950/50 dark:text-red-400 border border-red-200 dark:border-red-900 rounded-lg">
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-4 pb-6 border-b">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Image className="w-4 h-4 text-primary" />
+              </div>
+              <h3 className="text-sm font-semibold">Preview do Avatar</h3>
+            </div>
+            <div className="flex justify-center py-4">
+              <ProfileAvatar avatarUrl={avatarUrl} fullName={fullName} size="lg" />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="full_name">Nome Completo</Label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                id="full_name"
+                type="text"
+                placeholder="Roger Bertan"
+                className="pl-10"
+                {...register("full_name")}
+                disabled={isLoading}
+              />
+            </div>
+            {errors.full_name && (
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {errors.full_name.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="avatar_url">URL do Avatar</Label>
+            <div className="relative">
+              <Image className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                id="avatar_url"
+                type="text"
+                placeholder="https://example.com/avatar.jpg"
+                className="pl-10"
+                {...register("avatar_url")}
+                disabled={isLoading}
+              />
+            </div>
+            {errors.avatar_url && (
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {errors.avatar_url.message}
+              </p>
+            )}
+          </div>
+
+          <div className="flex justify-end pt-4">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="px-8"
+            >
+              {isLoading ? "Salvando..." : "Salvar Alterações"}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }

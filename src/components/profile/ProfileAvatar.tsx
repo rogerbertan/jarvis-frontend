@@ -14,6 +14,9 @@ export function ProfileAvatar({
   size = "md",
 }: ProfileAvatarProps) {
   const getInitials = (fullName: string) => {
+    if (!fullName || fullName.trim() === "") {
+      return "??";
+    }
     return fullName
       .split(" ")
       .slice(0, 2)

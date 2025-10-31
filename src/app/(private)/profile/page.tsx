@@ -1,9 +1,10 @@
 import { AppLayout } from "@/components/layout/AppLayout";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { getUserProfile } from "@/actions/profile";
-import { Card, CardContent } from "@/components/ui/card";
 import { redirect } from "next/navigation";
 import { ProfileForm } from "@/components/profile/ProfileForm";
+import { ProfileAvatarCard } from "@/components/profile/ProfileAvatarCard";
+import { AccountDetailsCard } from "@/components/profile/AccountDetailsCard";
 
 export default async function ProfilePage() {
   const { success, data } = await getUserProfile();
@@ -17,13 +18,15 @@ export default async function ProfilePage() {
       <PageHeader
         title="Perfil"
         description="Gerencie suas informações de perfil"
-      ></PageHeader>
-      <div className="grid gap-6 max-w-4xl">
-        <Card>
-          <CardContent className="flex flex-col gap-6">
-            <ProfileForm user={data} />
-          </CardContent>
-        </Card>
+      />
+      <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6">
+        <div className="space-y-6">
+          <ProfileAvatarCard user={data} />
+          <AccountDetailsCard user={data} />
+        </div>
+        <div>
+          <ProfileForm user={data} />
+        </div>
       </div>
     </AppLayout>
   );
