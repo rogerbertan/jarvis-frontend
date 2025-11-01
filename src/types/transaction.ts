@@ -1,24 +1,26 @@
 /**
  * Base transaction type for both expenses and incomes
+ * Aligned with Supabase schema (expenses/incomes tables)
  */
 export interface ITransaction {
   id: number;
-  account_id: number;
-  category_id: number;
+  user_id: string;
+  title: string;
   amount: number;
-  description: string;
-  date: string; // ISO 8601 format: "2024-09-23T14:15:00"
-  created_at: string; // ISO 8601 format: "2025-09-30T23:07:55.86522"
+  category: string;
+  date: string;
+  created_at: string;
+  updated_at: string;
 }
 
 /**
  * Form data for creating a new transaction
  */
 export interface ITransactionFormData {
-  description: string;
+  title: string;
   amount: string;
   date: string;
-  category_id: number;
+  category: string;
 }
 
 /**
