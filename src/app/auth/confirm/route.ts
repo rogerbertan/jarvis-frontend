@@ -21,5 +21,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  return NextResponse.redirect(new URL("/login?error=verification_failed", request.url));
+  return NextResponse.redirect(
+    new URL("/login?error=verification_failed", request.url)
+  );
 }

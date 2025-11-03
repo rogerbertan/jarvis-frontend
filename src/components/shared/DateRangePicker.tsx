@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -24,20 +23,7 @@ export function DateRangePicker({
   endDate,
   onStartDateChange,
   onEndDateChange,
-  placeholder = "Selecione o período",
 }: DateRangePickerProps) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const formatDateRange = () => {
-    if (startDate && endDate) {
-      return `${format(startDate, "dd/MM/yyyy")} - ${format(endDate, "dd/MM/yyyy")}`;
-    }
-    if (startDate) {
-      return `${format(startDate, "dd/MM/yyyy")} - ...`;
-    }
-    return placeholder;
-  };
-
   return (
     <div className="flex gap-2">
       <Popover>

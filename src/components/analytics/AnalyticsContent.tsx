@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { AnalyticsFilters } from "@/components/analytics/AnalyticsFilters";
 import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
@@ -14,83 +14,38 @@ import {
 } from "@/types/analytics";
 import type { IExpense } from "@/types/expense";
 import type { IIncome } from "@/types/income";
-import {
-  EXPENSE_CATEGORIES,
-  INCOME_CATEGORIES,
-  getExpenseCategoryName,
-  getIncomeCategoryName,
-} from "@/types/category";
+import type { ICategory } from "@/types/category";
+import { getCategories } from "@/actions/categories";
 
-export default function AnalyticsContent() {
-  // Mock data - In production, this would come from API
-  const [expenses] = useState<IExpense[]>([
-    {
-      id: 1,
-      account_id: 1,
-      category_id: 1,
-      amount: 75.25,
-      description: "Barbeiro",
-      date: "2024-09-23T14:15:00",
-      created_at: "2025-09-30T23:07:55.86522",
-    },
-    {
-      id: 2,
-      account_id: 1,
-      category_id: 2,
-      amount: 150.0,
-      description: "Le Monde",
-      date: "2024-09-15T10:00:00",
-      created_at: "2025-09-30T23:08:00.12345",
-    },
-    {
-      id: 3,
-      account_id: 1,
-      category_id: 1,
-      amount: 45.8,
-      description: "Omega 3",
-      date: "2024-10-05T19:30:00",
-      created_at: "2025-09-30T23:08:10.54321",
-    },
-    {
-      id: 4,
-      account_id: 1,
-      category_id: 3,
-      amount: 200.0,
-      description: "Cinema",
-      date: "2024-10-12T20:00:00",
-      created_at: "2025-09-30T23:09:00.00000",
-    },
-  ]);
+interface AnalyticsContentProps {
+  initialExpenses: IExpense[];
+  initialIncomes: IIncome[];
+}
 
-  const [incomes] = useState<IIncome[]>([
-    {
-      id: 1,
-      account_id: 1,
-      category_id: 1,
-      amount: 5000.0,
-      description: "Salário de Setembro",
-      date: "2024-09-05T10:00:00",
-      created_at: "2025-09-30T23:07:55.86522",
-    },
-    {
-      id: 2,
-      account_id: 1,
-      category_id: 2,
-      amount: 1500.0,
-      description: "Projeto Freelance",
-      date: "2024-09-15T14:30:00",
-      created_at: "2025-09-30T23:08:00.12345",
-    },
-    {
-      id: 3,
-      account_id: 1,
-      category_id: 1,
-      amount: 5000.0,
-      description: "Salário de Outubro",
-      date: "2024-10-05T10:00:00",
-      created_at: "2025-09-30T23:08:10.54321",
-    },
-  ]);
+export default function AnalyticsContent({
+  initialExpenses,
+  initialIncomes,
+}: AnalyticsContentProps) {
+  const expenses = initialExpenses;
+  const incomes = initialIncomes;
+  const [categories, setCategories] = useState<ICategory[]>([]);
+
+  // TODO: Change for React Query or SWR
+  useEffect(() => {
+    async function loadCategories() {
+      const { data } = await getCategories();
+      if (data) {
+        setCategories(data);
+      }
+    }
+    loadCategories();
+  }, []);
+
+  const [expenseCategories, incomeCategories] = useMemo(() => {
+    const expenseCats = categories.filter((cat) => cat.type === "expense");
+    const incomeCats = categories.filter((cat) => cat.type === "income");
+    return [expenseCats, incomeCats];
+  }, [categories]);
 
   const [filters, setFilters] = useState<IAnalyticsFilters>({
     period: FilterPeriod.ALL,
@@ -160,15 +115,18 @@ export default function AnalyticsContent() {
       });
     }
 
-    // Filter by categories
+    // Filter by category names
     if (filters.categoryIds.length > 0) {
+      const categoryNames = filters.categoryIds
+        .map((id) => categories.find((cat) => cat.id === id)?.name)
+        .filter(Boolean);
       result = result.filter((expense) =>
-        filters.categoryIds.includes(expense.category_id)
+        categoryNames.includes(expense.category)
       );
     }
 
     return result;
-  }, [expenses, dateRange, filters.categoryIds]);
+  }, [expenses, dateRange, filters.categoryIds, categories]);
 
   const filteredIncomes = useMemo(() => {
     let result = incomes;
@@ -183,15 +141,18 @@ export default function AnalyticsContent() {
       });
     }
 
-    // Filter by categories
+    // Filter by category names
     if (filters.categoryIds.length > 0) {
+      const categoryNames = filters.categoryIds
+        .map((id) => categories.find((cat) => cat.id === id)?.name)
+        .filter(Boolean);
       result = result.filter((income) =>
-        filters.categoryIds.includes(income.category_id)
+        categoryNames.includes(income.category)
       );
     }
 
     return result;
-  }, [incomes, dateRange, filters.categoryIds]);
+  }, [incomes, dateRange, filters.categoryIds, categories]);
 
   // Calculate analytics summary
   const analyticsSummary = useMemo((): IAnalyticsSummary => {
@@ -217,16 +178,17 @@ export default function AnalyticsContent() {
       totalIncomes > 0 ? (netBalance / totalIncomes) * 100 : 0;
 
     // Calculate category breakdowns
-    const expenseCategoryMap = new Map<number, ICategoryBreakdown>();
+    const expenseCategoryMap = new Map<string, ICategoryBreakdown>();
     expensesToAnalyze.forEach((expense) => {
-      const existing = expenseCategoryMap.get(expense.category_id);
+      const existing = expenseCategoryMap.get(expense.category);
+      const category = categories.find((cat) => cat.name === expense.category);
       if (existing) {
         existing.total += expense.amount;
         existing.count += 1;
       } else {
-        expenseCategoryMap.set(expense.category_id, {
-          categoryId: expense.category_id,
-          categoryName: getExpenseCategoryName(expense.category_id),
+        expenseCategoryMap.set(expense.category, {
+          categoryId: category?.id || 0,
+          categoryName: expense.category,
           total: expense.amount,
           count: 1,
           percentage: 0,
@@ -234,23 +196,24 @@ export default function AnalyticsContent() {
       }
     });
 
-    const expenseCategories = Array.from(expenseCategoryMap.values())
+    const expenseCategoriesData = Array.from(expenseCategoryMap.values())
       .map((cat) => ({
         ...cat,
         percentage: totalExpenses > 0 ? (cat.total / totalExpenses) * 100 : 0,
       }))
       .sort((a, b) => b.total - a.total);
 
-    const incomeCategoryMap = new Map<number, ICategoryBreakdown>();
+    const incomeCategoryMap = new Map<string, ICategoryBreakdown>();
     incomesToAnalyze.forEach((income) => {
-      const existing = incomeCategoryMap.get(income.category_id);
+      const existing = incomeCategoryMap.get(income.category);
+      const category = categories.find((cat) => cat.name === income.category);
       if (existing) {
         existing.total += income.amount;
         existing.count += 1;
       } else {
-        incomeCategoryMap.set(income.category_id, {
-          categoryId: income.category_id,
-          categoryName: getIncomeCategoryName(income.category_id),
+        incomeCategoryMap.set(income.category, {
+          categoryId: category?.id || 0,
+          categoryName: income.category,
           total: income.amount,
           count: 1,
           percentage: 0,
@@ -258,7 +221,7 @@ export default function AnalyticsContent() {
       }
     });
 
-    const incomeCategories = Array.from(incomeCategoryMap.values())
+    const incomeCategoriesData = Array.from(incomeCategoryMap.values())
       .map((cat) => ({
         ...cat,
         percentage: totalIncomes > 0 ? (cat.total / totalIncomes) * 100 : 0,
@@ -332,11 +295,11 @@ export default function AnalyticsContent() {
       incomeCount: incomesToAnalyze.length,
       expenseCount: expensesToAnalyze.length,
       savingsRate,
-      expenseCategories,
-      incomeCategories,
+      expenseCategories: expenseCategoriesData,
+      incomeCategories: incomeCategoriesData,
       monthlyTrends,
     };
-  }, [filteredExpenses, filteredIncomes, filters.transactionType]);
+  }, [filteredExpenses, filteredIncomes, filters.transactionType, categories]);
 
   return (
     <>
@@ -349,8 +312,8 @@ export default function AnalyticsContent() {
         <AnalyticsFilters
           filters={filters}
           onFiltersChange={setFilters}
-          expenseCategories={EXPENSE_CATEGORIES}
-          incomeCategories={INCOME_CATEGORIES}
+          expenseCategories={expenseCategories}
+          incomeCategories={incomeCategories}
         />
 
         <AnalyticsDashboard summary={analyticsSummary} />

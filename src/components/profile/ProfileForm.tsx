@@ -10,7 +10,13 @@ import { User, Image } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import { ProfileAvatar } from "./ProfileAvatar";
 
 interface ProfileFormProps {
@@ -64,9 +70,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
     <Card>
       <CardHeader>
         <CardTitle>Informações Pessoais</CardTitle>
-        <CardDescription>
-          Atualize suas informações de perfil
-        </CardDescription>
+        <CardDescription>Atualize suas informações de perfil</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -84,7 +88,11 @@ export function ProfileForm({ user }: ProfileFormProps) {
               <h3 className="text-sm font-semibold">Preview do Avatar</h3>
             </div>
             <div className="flex justify-center py-4">
-              <ProfileAvatar avatarUrl={avatarUrl} fullName={fullName} size="lg" />
+              <ProfileAvatar
+                avatarUrl={avatarUrl}
+                fullName={fullName}
+                size="lg"
+              />
             </div>
           </div>
 
@@ -129,11 +137,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
           </div>
 
           <div className="flex justify-end pt-4">
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="px-8"
-            >
+            <Button type="submit" disabled={isLoading} className="px-8">
               {isLoading ? "Salvando..." : "Salvar Alterações"}
             </Button>
           </div>
