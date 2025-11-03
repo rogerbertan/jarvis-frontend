@@ -201,8 +201,8 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {summary.expenseCategories.map((category) => (
-                  <TableRow key={category.categoryId}>
+                {summary.expenseCategories.map((category, index) => (
+                  <TableRow key={`expense-${category.categoryId}-${index}`}>
                     <TableCell className="font-medium">
                       {category.categoryName}
                     </TableCell>
@@ -238,8 +238,8 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {summary.incomeCategories.map((category) => (
-                  <TableRow key={category.categoryId}>
+                {summary.incomeCategories.map((category, index) => (
+                  <TableRow key={`income-${category.categoryId}-${index}`}>
                     <TableCell className="font-medium">
                       {category.categoryName}
                     </TableCell>
