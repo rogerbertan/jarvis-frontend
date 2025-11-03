@@ -1,52 +1,42 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { TransactionForm } from "@/components/transaction/TransactionForm";
 import { TransactionList } from "@/components/transaction/TransactionList";
 import { MonthSelector } from "@/components/shared/MonthSelector";
 import { TransactionStats } from "@/components/transaction/TransactionStats";
+import { createExpense, deleteExpense } from "@/actions/expenses";
+import { getCategories } from "@/actions/categories";
 import type {
   IExpense,
   IExpenseFormData,
   IMonthOption,
   IMonthlyStats,
 } from "@/types/expense";
-import { EXPENSE_CATEGORIES, getExpenseCategoryName } from "@/types/category";
+import type { ICategory } from "@/types/category";
 
-export default function ExpensesContent() {
-  // State for expenses (mocked data matching backend format)
-  const [expenses, setExpenses] = useState<IExpense[]>([
-    {
-      id: 1,
-      account_id: 1,
-      category_id: 1,
-      amount: 75.25,
-      description: "Barbeiro",
-      date: "2025-10-23T14:15:00",
-      created_at: "2025-09-30T23:07:55.86522",
-    },
-    {
-      id: 2,
-      account_id: 1,
-      category_id: 2,
-      amount: 150.0,
-      description: "Le Monde",
-      date: "2025-10-15T10:00:00",
-      created_at: "2025-09-30T23:08:00.12345",
-    },
-    {
-      id: 3,
-      account_id: 1,
-      category_id: 1,
-      amount: 45.8,
-      description: "Omega 3",
-      date: "2025-10-05T19:30:00",
-      created_at: "2025-09-30T23:08:10.54321",
-    },
-  ]);
+interface ExpensesContentProps {
+  initialExpenses: IExpense[];
+}
 
+export default function ExpensesContent({
+  initialExpenses,
+}: ExpensesContentProps) {
+  const [expenses, setExpenses] = useState<IExpense[]>(initialExpenses);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
+
+  // TODO: Change to React Query or SWR
+  useEffect(() => {
+    async function loadCategories() {
+      const { data } = await getCategories("expense");
+      if (data) {
+        setCategories(data);
+      }
+    }
+    loadCategories();
+  }, []);
 
   const availableMonths = useMemo((): IMonthOption[] => {
     const monthsSet = new Set<string>();
@@ -104,22 +94,32 @@ export default function ExpensesContent() {
     };
   }, [filteredExpenses, selectedMonth, availableMonths]);
 
-  const handleAddExpense = (formData: IExpenseFormData) => {
-    const newExpense: IExpense = {
-      id: Math.max(0, ...expenses.map((e) => e.id)) + 1,
-      account_id: 1,
-      category_id: formData.category_id,
-      amount: parseFloat(formData.amount),
-      description: formData.description,
-      date: new Date(formData.date).toISOString(),
-      created_at: new Date().toISOString(),
-    };
+  const handleAddExpense = async (formData: IExpenseFormData) => {
+    const { data, error } = await createExpense(formData);
 
-    setExpenses((prev) => [newExpense, ...prev]);
+    if (error) {
+      console.error("Erro ao adicionar despesa:", error);
+      // TODO: Add toast notification for error
+      return;
+    }
+
+    if (data) {
+      setExpenses((prev) => [data, ...prev]);
+    }
   };
 
-  const handleDeleteExpense = (id: number) => {
-    setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+  const handleDeleteExpense = async (id: number) => {
+    const { success, error } = await deleteExpense(id);
+
+    if (error) {
+      console.error("Erro ao deletar despesa:", error);
+      // TODO: Add toast notification for error
+      return;
+    }
+
+    if (success) {
+      setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+    }
   };
 
   return (
@@ -133,7 +133,7 @@ export default function ExpensesContent() {
         <div className="space-y-6">
           <TransactionForm
             type="expense"
-            categories={EXPENSE_CATEGORIES}
+            categories={categories}
             onAddTransaction={handleAddExpense}
             title="Adicionar Nova Despesa"
             buttonText="Adicionar Despesa"
@@ -157,7 +157,6 @@ export default function ExpensesContent() {
             type="expense"
             transactions={filteredExpenses}
             onDeleteTransaction={handleDeleteExpense}
-            getCategoryName={getExpenseCategoryName}
             title="Lista de Despesas"
             emptyMessage="Nenhuma despesa encontrada. Adicione sua primeira despesa acima."
           />

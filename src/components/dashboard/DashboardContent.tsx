@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { DashboardCard } from "@/components/dashboard/DashboardCard";
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -11,68 +10,17 @@ import { getGreeting } from "@/lib/utils";
 
 interface DashboardContentProps {
   userName: string;
+  initialExpenses: IExpense[];
+  initialIncomes: IIncome[];
 }
 
-export function DashboardContent({ userName }: DashboardContentProps) {
-  const [expenses] = useState<IExpense[]>([
-    {
-      id: 1,
-      account_id: 1,
-      category_id: 1,
-      amount: 75.25,
-      description: "Barbeiro",
-      date: "2025-10-23T14:15:00",
-      created_at: "2025-09-30T23:07:55.86522",
-    },
-    {
-      id: 2,
-      account_id: 1,
-      category_id: 2,
-      amount: 150.0,
-      description: "Le Monde",
-      date: "2025-10-15T10:00:00",
-      created_at: "2025-09-30T23:08:00.12345",
-    },
-    {
-      id: 3,
-      account_id: 1,
-      category_id: 1,
-      amount: 45.8,
-      description: "Omega 3",
-      date: "2025-10-05T19:30:00",
-      created_at: "2025-09-30T23:08:10.54321",
-    },
-  ]);
-
-  const [incomes] = useState<IIncome[]>([
-    {
-      id: 1,
-      account_id: 1,
-      category_id: 1,
-      amount: 5000.0,
-      description: "Salário de Setembro",
-      date: "2025-09-05T10:00:00",
-      created_at: "2025-09-30T23:07:55.86522",
-    },
-    {
-      id: 2,
-      account_id: 1,
-      category_id: 2,
-      amount: 1500.0,
-      description: "Projeto Freelance",
-      date: "2025-09-15T14:30:00",
-      created_at: "2025-09-30T23:08:00.12345",
-    },
-    {
-      id: 3,
-      account_id: 1,
-      category_id: 1,
-      amount: 5000.0,
-      description: "Salário de Outubro",
-      date: "2025-10-05T10:00:00",
-      created_at: "2025-09-30T23:08:10.54321",
-    },
-  ]);
+export function DashboardContent({
+  userName,
+  initialExpenses,
+  initialIncomes,
+}: DashboardContentProps) {
+  const expenses = initialExpenses;
+  const incomes = initialIncomes;
 
   const metrics = useDashboardData(expenses, incomes);
 

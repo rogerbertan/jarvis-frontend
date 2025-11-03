@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import type { IExpense } from "@/types/expense";
 import type { IIncome } from "@/types/income";
-import { getExpenseCategoryName } from "@/types/category";
 
 export interface DashboardMetrics {
   currentBalance: number;
@@ -70,26 +69,23 @@ export function useDashboardData(
 
     const categoryTotals = currentMonthExpenses.reduce(
       (acc, expense) => {
-        acc[expense.category_id] =
-          (acc[expense.category_id] || 0) + expense.amount;
+        acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
         return acc;
       },
-      {} as Record<number, number>
+      {} as Record<string, number>
     );
 
-    const topCategoryId =
+    const topCategoryName =
       Object.keys(categoryTotals).length > 0
-        ? Number(
-            Object.entries(categoryTotals).reduce((max, [categoryId, total]) =>
-              total > max[1] ? [categoryId, total] : max
-            )[0]
-          )
+        ? Object.entries(categoryTotals).reduce((max, [categoryName, total]) =>
+            total > max[1] ? [categoryName, total] : max
+          )[0]
         : null;
 
-    const topCategory = topCategoryId
+    const topCategory = topCategoryName
       ? {
-          name: getExpenseCategoryName(topCategoryId),
-          total: categoryTotals[topCategoryId],
+          name: topCategoryName,
+          total: categoryTotals[topCategoryName],
         }
       : null;
 
@@ -99,7 +95,7 @@ export function useDashboardData(
       monthlyBalance,
       topExpense: topExpense
         ? {
-            description: topExpense.description,
+            description: topExpense.title,
             amount: topExpense.amount,
           }
         : null,

@@ -43,10 +43,10 @@ export function TransactionForm({
   buttonText,
 }: ITransactionFormProps) {
   const [formData, setFormData] = useState<ITransactionFormData>({
-    description: "",
+    title: "",
     amount: "",
     date: new Date().toISOString().split("T")[0],
-    category_id: 1,
+    category: categories[0]?.name || "",
   });
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
@@ -55,7 +55,12 @@ export function TransactionForm({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formData.description.trim() || !formData.amount || !formData.date) {
+    if (
+      !formData.title.trim() ||
+      !formData.amount ||
+      !formData.date ||
+      !formData.category
+    ) {
       return;
     }
 
@@ -68,17 +73,12 @@ export function TransactionForm({
 
     const newDate = new Date();
     setFormData({
-      description: "",
+      title: "",
       amount: "",
       date: newDate.toISOString().split("T")[0],
-      category_id: 1,
+      category: categories[0]?.name || "",
     });
     setSelectedDate(newDate);
-  };
-
-  const getCategoryName = (categoryId: number): string => {
-    const category = categories.find((cat) => cat.id === categoryId);
-    return category?.name ?? "Desconhecido";
   };
 
   return (
@@ -89,23 +89,20 @@ export function TransactionForm({
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="flex flex-col gap-2">
-            <label
-              htmlFor="description"
-              className="text-sm font-medium font-body"
-            >
+            <label htmlFor="title" className="text-sm font-medium font-body">
               Descrição
             </label>
             <Input
-              id="description"
+              id="title"
               type="text"
               placeholder={
                 type === "expense"
                   ? "ex: Compras no mercado"
                   : "ex: Salário do mês"
               }
-              value={formData.description}
+              value={formData.title}
               onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+                setFormData({ ...formData, title: e.target.value })
               }
               required
             />
@@ -182,7 +179,7 @@ export function TransactionForm({
                   aria-expanded={categoryOpen}
                   className="w-full justify-between font-body"
                 >
-                  {getCategoryName(formData.category_id)}
+                  {formData.category || "Selecione uma categoria"}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
@@ -199,7 +196,7 @@ export function TransactionForm({
                           onSelect={() => {
                             setFormData({
                               ...formData,
-                              category_id: category.id,
+                              category: category.name,
                             });
                             setCategoryOpen(false);
                           }}
@@ -207,7 +204,7 @@ export function TransactionForm({
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
-                              formData.category_id === category.id
+                              formData.category === category.name
                                 ? "opacity-100"
                                 : "opacity-0"
                             )}

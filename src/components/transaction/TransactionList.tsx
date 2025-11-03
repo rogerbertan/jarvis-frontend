@@ -15,7 +15,6 @@ interface ITransactionListProps {
   type: TransactionType;
   transactions: ITransaction[];
   onDeleteTransaction: (id: number) => void;
-  getCategoryName: (categoryId: number) => string;
   title: string;
   emptyMessage: string;
 }
@@ -24,7 +23,6 @@ export function TransactionList({
   type,
   transactions,
   onDeleteTransaction,
-  getCategoryName,
   title,
   emptyMessage,
 }: ITransactionListProps) {
@@ -85,10 +83,10 @@ export function TransactionList({
                     {formatDate(transaction.date)}
                   </TableCell>
                   <TableCell className="font-body">
-                    {transaction.description}
+                    {transaction.title}
                   </TableCell>
                   <TableCell className="font-body">
-                    {getCategoryName(transaction.category_id)}
+                    {transaction.category}
                   </TableCell>
                   <TableCell className="text-right font-semibold font-heading">
                     {formatAmount(transaction.amount)}

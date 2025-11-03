@@ -1,48 +1,38 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { TransactionForm } from "@/components/transaction/TransactionForm";
 import { TransactionList } from "@/components/transaction/TransactionList";
 import { MonthSelector } from "@/components/shared/MonthSelector";
 import { TransactionStats } from "@/components/transaction/TransactionStats";
+import { createIncome, deleteIncome } from "@/actions/incomes";
+import { getCategories } from "@/actions/categories";
 import type { IIncome, IIncomeFormData } from "@/types/income";
 import type { IMonthOption, IMonthlyStats } from "@/types/transaction";
-import { INCOME_CATEGORIES, getIncomeCategoryName } from "@/types/category";
+import type { ICategory } from "@/types/category";
 
-export default function IncomesContent() {
-  // State for incomes (mocked data matching backend format)
-  const [incomes, setIncomes] = useState<IIncome[]>([
-    {
-      id: 1,
-      account_id: 1,
-      category_id: 1,
-      amount: 5000.0,
-      description: "Salário de Setembro",
-      date: "2025-09-05T10:00:00",
-      created_at: "2025-09-30T23:07:55.86522",
-    },
-    {
-      id: 2,
-      account_id: 1,
-      category_id: 2,
-      amount: 1500.0,
-      description: "Projeto Freelance",
-      date: "2025-09-15T14:30:00",
-      created_at: "2025-09-30T23:08:00.12345",
-    },
-    {
-      id: 3,
-      account_id: 1,
-      category_id: 1,
-      amount: 5000.0,
-      description: "Salário de Outubro",
-      date: "2025-10-05T10:00:00",
-      created_at: "2025-09-30T23:08:10.54321",
-    },
-  ]);
+interface IncomesContentProps {
+  initialIncomes: IIncome[];
+}
 
+export default function IncomesContent({
+  initialIncomes,
+}: IncomesContentProps) {
+  const [incomes, setIncomes] = useState<IIncome[]>(initialIncomes);
+  const [categories, setCategories] = useState<ICategory[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
+
+  // TODO: Change to React Query or SWR
+  useEffect(() => {
+    async function loadCategories() {
+      const { data } = await getCategories("income");
+      if (data) {
+        setCategories(data);
+      }
+    }
+    loadCategories();
+  }, []);
 
   const availableMonths = useMemo((): IMonthOption[] => {
     const monthsSet = new Set<string>();
@@ -100,22 +90,32 @@ export default function IncomesContent() {
     };
   }, [filteredIncomes, selectedMonth, availableMonths]);
 
-  const handleAddIncome = (formData: IIncomeFormData) => {
-    const newIncome: IIncome = {
-      id: Math.max(0, ...incomes.map((i) => i.id)) + 1,
-      account_id: 1,
-      category_id: formData.category_id,
-      amount: parseFloat(formData.amount),
-      description: formData.description,
-      date: new Date(formData.date).toISOString(),
-      created_at: new Date().toISOString(),
-    };
+  const handleAddIncome = async (formData: IIncomeFormData) => {
+    const { data, error } = await createIncome(formData);
 
-    setIncomes((prev) => [newIncome, ...prev]);
+    if (error) {
+      console.error("Erro ao adicionar receita:", error);
+      // TODO: Add toast notification for error
+      return;
+    }
+
+    if (data) {
+      setIncomes((prev) => [data, ...prev]);
+    }
   };
 
-  const handleDeleteIncome = (id: number) => {
-    setIncomes((prev) => prev.filter((income) => income.id !== id));
+  const handleDeleteIncome = async (id: number) => {
+    const { success, error } = await deleteIncome(id);
+
+    if (error) {
+      console.error("Erro ao deletar receita:", error);
+      // TODO: Add toast notification for error
+      return;
+    }
+
+    if (success) {
+      setIncomes((prev) => prev.filter((income) => income.id !== id));
+    }
   };
 
   return (
@@ -129,7 +129,7 @@ export default function IncomesContent() {
         <div className="space-y-6">
           <TransactionForm
             type="income"
-            categories={INCOME_CATEGORIES}
+            categories={categories}
             onAddTransaction={handleAddIncome}
             title="Adicionar Nova Receita"
             buttonText="Adicionar Receita"
@@ -153,7 +153,6 @@ export default function IncomesContent() {
             type="income"
             transactions={filteredIncomes}
             onDeleteTransaction={handleDeleteIncome}
-            getCategoryName={getIncomeCategoryName}
             title="Lista de Receitas"
             emptyMessage="Nenhuma receita encontrada. Adicione sua primeira receita acima."
           />
