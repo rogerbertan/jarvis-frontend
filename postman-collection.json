@@ -1,0 +1,912 @@
+{
+  "info": {
+    "name": "Jarvis Frontend - Supabase API",
+    "description": "API endpoints for Jarvis expense tracking application using Supabase",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{supabase_access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://your-project.supabase.co",
+      "type": "string"
+    },
+    {
+      "key": "supabase_anon_key",
+      "value": "your-anon-key-here",
+      "type": "string"
+    },
+    {
+      "key": "supabase_access_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/v1/token?grant_type=password",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "v1", "token"],
+              "query": [
+                {
+                  "key": "grant_type",
+                  "value": "password"
+                }
+              ]
+            },
+            "description": "Authenticate user with email and password"
+          },
+          "response": []
+        },
+        {
+          "name": "Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\",\n  \"data\": {\n    \"name\": \"John Doe\",\n    \"display_name\": \"John Doe\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/v1/signup",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "v1", "signup"]
+            },
+            "description": "Register new user and create profile"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/v1/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "v1", "logout"]
+            },
+            "description": "Sign out current user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/v1/user",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "v1", "user"]
+            },
+            "description": "Get current authenticated user"
+          },
+          "response": []
+        }
+      ],
+      "description": "Authentication endpoints using Supabase Auth"
+    },
+    {
+      "name": "Expenses",
+      "item": [
+        {
+          "name": "Get All Expenses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/expenses?select=*&order=date.desc",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "expenses"],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                },
+                {
+                  "key": "order",
+                  "value": "date.desc"
+                }
+              ]
+            },
+            "description": "Get all expenses for authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Expenses by Month",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/expenses?select=*&date=gte.2025-01-01&date=lte.2025-01-31&order=date.desc",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "expenses"],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                },
+                {
+                  "key": "date",
+                  "value": "gte.2025-01-01",
+                  "description": "Start date"
+                },
+                {
+                  "key": "date",
+                  "value": "lte.2025-01-31",
+                  "description": "End date"
+                },
+                {
+                  "key": "order",
+                  "value": "date.desc"
+                }
+              ]
+            },
+            "description": "Get expenses filtered by month"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Expense by Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/expenses?select=*&category=eq.Alimentação&order=date.desc",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "expenses"],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                },
+                {
+                  "key": "category",
+                  "value": "eq.Alimentação"
+                },
+                {
+                  "key": "order",
+                  "value": "date.desc"
+                }
+              ]
+            },
+            "description": "Get expenses filtered by category"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Expense by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/expenses?id=eq.1&select=*",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "expenses"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.1"
+                },
+                {
+                  "key": "select",
+                  "value": "*"
+                }
+              ]
+            },
+            "description": "Get single expense by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Expense",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Almoço no restaurante\",\n  \"amount\": 45.50,\n  \"category\": \"Alimentação\",\n  \"date\": \"2025-01-15T12:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/rest/v1/expenses",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "expenses"]
+            },
+            "description": "Create new expense"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Expense",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Almoço no restaurante (atualizado)\",\n  \"amount\": 50.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/rest/v1/expenses?id=eq.1",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "expenses"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.1"
+                }
+              ]
+            },
+            "description": "Update existing expense"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Expense",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/expenses?id=eq.1",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "expenses"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.1"
+                }
+              ]
+            },
+            "description": "Delete expense by ID"
+          },
+          "response": []
+        }
+      ],
+      "description": "Expense management endpoints"
+    },
+    {
+      "name": "Incomes",
+      "item": [
+        {
+          "name": "Get All Incomes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/incomes?select=*&order=date.desc",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "incomes"],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                },
+                {
+                  "key": "order",
+                  "value": "date.desc"
+                }
+              ]
+            },
+            "description": "Get all incomes for authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Incomes by Month",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/incomes?select=*&date=gte.2025-01-01&date=lte.2025-01-31&order=date.desc",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "incomes"],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                },
+                {
+                  "key": "date",
+                  "value": "gte.2025-01-01"
+                },
+                {
+                  "key": "date",
+                  "value": "lte.2025-01-31"
+                },
+                {
+                  "key": "order",
+                  "value": "date.desc"
+                }
+              ]
+            },
+            "description": "Get incomes filtered by month"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Income by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/incomes?id=eq.1&select=*",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "incomes"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.1"
+                },
+                {
+                  "key": "select",
+                  "value": "*"
+                }
+              ]
+            },
+            "description": "Get single income by ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Income",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Salário mensal\",\n  \"amount\": 5000.00,\n  \"category\": \"Salário\",\n  \"date\": \"2025-01-05T09:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/rest/v1/incomes",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "incomes"]
+            },
+            "description": "Create new income"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Income",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Salário mensal (atualizado)\",\n  \"amount\": 5500.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/rest/v1/incomes?id=eq.1",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "incomes"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.1"
+                }
+              ]
+            },
+            "description": "Update existing income"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Income",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/incomes?id=eq.1",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "incomes"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.1"
+                }
+              ]
+            },
+            "description": "Delete income by ID"
+          },
+          "response": []
+        }
+      ],
+      "description": "Income management endpoints"
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/categories?select=*&order=name.asc",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "categories"],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                },
+                {
+                  "key": "order",
+                  "value": "name.asc"
+                }
+              ]
+            },
+            "description": "Get all categories for authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Expense Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/categories?select=*&type=eq.expense&order=name.asc",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "categories"],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                },
+                {
+                  "key": "type",
+                  "value": "eq.expense"
+                },
+                {
+                  "key": "order",
+                  "value": "name.asc"
+                }
+              ]
+            },
+            "description": "Get expense categories only"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Income Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/categories?select=*&type=eq.income&order=name.asc",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "categories"],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                },
+                {
+                  "key": "type",
+                  "value": "eq.income"
+                },
+                {
+                  "key": "order",
+                  "value": "name.asc"
+                }
+              ]
+            },
+            "description": "Get income categories only"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Eletrônicos\",\n  \"type\": \"expense\",\n  \"color\": \"#3b82f6\",\n  \"icon\": \"💻\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/rest/v1/categories",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "categories"]
+            },
+            "description": "Create new category"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Eletrônicos e Gadgets\",\n  \"color\": \"#6366f1\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/rest/v1/categories?id=eq.1",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "categories"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.1"
+                }
+              ]
+            },
+            "description": "Update existing category"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/categories?id=eq.1",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "categories"],
+              "query": [
+                {
+                  "key": "id",
+                  "value": "eq.1"
+                }
+              ]
+            },
+            "description": "Delete category by ID"
+          },
+          "response": []
+        }
+      ],
+      "description": "Category management endpoints"
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/rest/v1/users?select=*",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "users"],
+              "query": [
+                {
+                  "key": "select",
+                  "value": "*"
+                }
+              ]
+            },
+            "description": "Get current user profile"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "apikey",
+                "value": "{{supabase_anon_key}}"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supabase_access_token}}"
+              },
+              {
+                "key": "Prefer",
+                "value": "return=representation"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"João da Silva\",\n  \"avatar_url\": \"https://example.com/avatar.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/rest/v1/users",
+              "host": ["{{base_url}}"],
+              "path": ["rest", "v1", "users"]
+            },
+            "description": "Update user profile"
+          },
+          "response": []
+        }
+      ],
+      "description": "User profile endpoints"
+    }
+  ]
+}
