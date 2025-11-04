@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { AnalyticsFilters } from "@/components/analytics/AnalyticsFilters";
 import { AnalyticsDashboard } from "@/components/analytics/AnalyticsDashboard";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import { useAnalyticsQuery } from "@/hooks/useAnalyticsQuery";
 import {
   FilterPeriod,
   TransactionTypeFilter,
@@ -15,37 +18,55 @@ import {
 import type { IExpense } from "@/types/expense";
 import type { IIncome } from "@/types/income";
 import type { ICategory } from "@/types/category";
-import { getCategories } from "@/actions/categories";
 
 interface AnalyticsContentProps {
   initialExpenses: IExpense[];
   initialIncomes: IIncome[];
+  initialExpenseCategories: ICategory[];
+  initialIncomeCategories: ICategory[];
 }
 
 export default function AnalyticsContent({
   initialExpenses,
   initialIncomes,
+  initialExpenseCategories,
+  initialIncomeCategories,
 }: AnalyticsContentProps) {
-  const expenses = initialExpenses;
-  const incomes = initialIncomes;
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const {
+    expenses: { data: expenses = [], isLoading: isLoadingExpenses, isError: isErrorExpenses, error: errorExpenses, refetch: refetchExpenses },
+    incomes: { data: incomes = [], isLoading: isLoadingIncomes, isError: isErrorIncomes, error: errorIncomes, refetch: refetchIncomes },
+  } = useAnalyticsQuery(initialExpenses, initialIncomes);
 
-  // TODO: Change for React Query or SWR
-  useEffect(() => {
-    async function loadCategories() {
-      const { data } = await getCategories();
-      if (data) {
-        setCategories(data);
-      }
-    }
-    loadCategories();
-  }, []);
+  const expenseCategories = initialExpenseCategories;
+  const incomeCategories = initialIncomeCategories;
 
-  const [expenseCategories, incomeCategories] = useMemo(() => {
-    const expenseCats = categories.filter((cat) => cat.type === "expense");
-    const incomeCats = categories.filter((cat) => cat.type === "income");
-    return [expenseCats, incomeCats];
-  }, [categories]);
+  const categories = useMemo(() => {
+    return [...expenseCategories, ...incomeCategories];
+  }, [expenseCategories, incomeCategories]);
+
+  if (isLoadingExpenses || isLoadingIncomes) {
+    return <LoadingSpinner message="Carregando dados de análise..." />;
+  }
+
+  if (isErrorExpenses) {
+    return (
+      <ErrorAlert
+        title="Erro ao carregar despesas"
+        message={errorExpenses?.message}
+        onRetry={() => refetchExpenses()}
+      />
+    );
+  }
+
+  if (isErrorIncomes) {
+    return (
+      <ErrorAlert
+        title="Erro ao carregar receitas"
+        message={errorIncomes?.message}
+        onRetry={() => refetchIncomes()}
+      />
+    );
+  }
 
   const [filters, setFilters] = useState<IAnalyticsFilters>({
     period: FilterPeriod.ALL,

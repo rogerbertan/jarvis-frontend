@@ -1,13 +1,19 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { TransactionForm } from "@/components/transaction/TransactionForm";
 import { TransactionList } from "@/components/transaction/TransactionList";
 import { MonthSelector } from "@/components/shared/MonthSelector";
 import { TransactionStats } from "@/components/transaction/TransactionStats";
-import { createExpense, deleteExpense } from "@/actions/expenses";
-import { getCategories } from "@/actions/categories";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import {
+  useExpensesQuery,
+  useExpenseCategoriesQuery,
+  useCreateExpenseMutation,
+  useDeleteExpenseMutation,
+} from "@/hooks/useExpensesQuery";
 import type {
   IExpense,
   IExpenseFormData,
@@ -18,25 +24,33 @@ import type { ICategory } from "@/types/category";
 
 interface ExpensesContentProps {
   initialExpenses: IExpense[];
+  initialCategories: ICategory[];
 }
 
 export default function ExpensesContent({
   initialExpenses,
+  initialCategories,
 }: ExpensesContentProps) {
-  const [expenses, setExpenses] = useState<IExpense[]>(initialExpenses);
-  const [categories, setCategories] = useState<ICategory[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
 
-  // TODO: Change to React Query or SWR
-  useEffect(() => {
-    async function loadCategories() {
-      const { data } = await getCategories("expense");
-      if (data) {
-        setCategories(data);
-      }
-    }
-    loadCategories();
-  }, []);
+  const {
+    data: expenses = [],
+    isLoading: isLoadingExpenses,
+    isError: isErrorExpenses,
+    error: errorExpenses,
+    refetch: refetchExpenses,
+  } = useExpensesQuery(initialExpenses);
+
+  const {
+    data: categories = [],
+    isLoading: isLoadingCategories,
+    isError: isErrorCategories,
+    error: errorCategories,
+    refetch: refetchCategories,
+  } = useExpenseCategoriesQuery(initialCategories);
+
+  const createExpenseMutation = useCreateExpenseMutation();
+  const deleteExpenseMutation = useDeleteExpenseMutation();
 
   const availableMonths = useMemo((): IMonthOption[] => {
     const monthsSet = new Set<string>();
@@ -95,32 +109,46 @@ export default function ExpensesContent({
   }, [filteredExpenses, selectedMonth, availableMonths]);
 
   const handleAddExpense = async (formData: IExpenseFormData) => {
-    const { data, error } = await createExpense(formData);
-
-    if (error) {
+    try {
+      await createExpenseMutation.mutateAsync(formData);
+    } catch (error) {
       console.error("Erro ao adicionar despesa:", error);
       // TODO: Add toast notification for error
-      return;
-    }
-
-    if (data) {
-      setExpenses((prev) => [data, ...prev]);
     }
   };
 
   const handleDeleteExpense = async (id: number) => {
-    const { success, error } = await deleteExpense(id);
-
-    if (error) {
+    try {
+      await deleteExpenseMutation.mutateAsync(id);
+    } catch (error) {
       console.error("Erro ao deletar despesa:", error);
       // TODO: Add toast notification for error
-      return;
-    }
-
-    if (success) {
-      setExpenses((prev) => prev.filter((expense) => expense.id !== id));
     }
   };
+
+  if (isLoadingExpenses || isLoadingCategories) {
+    return <LoadingSpinner message="Carregando despesas..." />;
+  }
+
+  if (isErrorExpenses) {
+    return (
+      <ErrorAlert
+        title="Erro ao carregar despesas"
+        message={errorExpenses?.message}
+        onRetry={() => refetchExpenses()}
+      />
+    );
+  }
+
+  if (isErrorCategories) {
+    return (
+      <ErrorAlert
+        title="Erro ao carregar categorias"
+        message={errorCategories?.message}
+        onRetry={() => refetchCategories()}
+      />
+    );
+  }
 
   return (
     <>

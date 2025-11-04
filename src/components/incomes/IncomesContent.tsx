@@ -1,38 +1,52 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { TransactionForm } from "@/components/transaction/TransactionForm";
 import { TransactionList } from "@/components/transaction/TransactionList";
 import { MonthSelector } from "@/components/shared/MonthSelector";
 import { TransactionStats } from "@/components/transaction/TransactionStats";
-import { createIncome, deleteIncome } from "@/actions/incomes";
-import { getCategories } from "@/actions/categories";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { ErrorAlert } from "@/components/shared/ErrorAlert";
+import {
+  useIncomesQuery,
+  useIncomeCategoriesQuery,
+  useCreateIncomeMutation,
+  useDeleteIncomeMutation,
+} from "@/hooks/useIncomesQuery";
 import type { IIncome, IIncomeFormData } from "@/types/income";
 import type { IMonthOption, IMonthlyStats } from "@/types/transaction";
 import type { ICategory } from "@/types/category";
 
 interface IncomesContentProps {
   initialIncomes: IIncome[];
+  initialCategories: ICategory[];
 }
 
 export default function IncomesContent({
   initialIncomes,
+  initialCategories,
 }: IncomesContentProps) {
-  const [incomes, setIncomes] = useState<IIncome[]>(initialIncomes);
-  const [categories, setCategories] = useState<ICategory[]>([]);
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
 
-  // TODO: Change to React Query or SWR
-  useEffect(() => {
-    async function loadCategories() {
-      const { data } = await getCategories("income");
-      if (data) {
-        setCategories(data);
-      }
-    }
-    loadCategories();
-  }, []);
+  const {
+    data: incomes = [],
+    isLoading: isLoadingIncomes,
+    isError: isErrorIncomes,
+    error: errorIncomes,
+    refetch: refetchIncomes,
+  } = useIncomesQuery(initialIncomes);
+
+  const {
+    data: categories = [],
+    isLoading: isLoadingCategories,
+    isError: isErrorCategories,
+    error: errorCategories,
+    refetch: refetchCategories,
+  } = useIncomeCategoriesQuery(initialCategories);
+
+  const createIncomeMutation = useCreateIncomeMutation();
+  const deleteIncomeMutation = useDeleteIncomeMutation();
 
   const availableMonths = useMemo((): IMonthOption[] => {
     const monthsSet = new Set<string>();
@@ -91,32 +105,46 @@ export default function IncomesContent({
   }, [filteredIncomes, selectedMonth, availableMonths]);
 
   const handleAddIncome = async (formData: IIncomeFormData) => {
-    const { data, error } = await createIncome(formData);
-
-    if (error) {
+    try {
+      await createIncomeMutation.mutateAsync(formData);
+    } catch (error) {
       console.error("Erro ao adicionar receita:", error);
       // TODO: Add toast notification for error
-      return;
-    }
-
-    if (data) {
-      setIncomes((prev) => [data, ...prev]);
     }
   };
 
   const handleDeleteIncome = async (id: number) => {
-    const { success, error } = await deleteIncome(id);
-
-    if (error) {
+    try {
+      await deleteIncomeMutation.mutateAsync(id);
+    } catch (error) {
       console.error("Erro ao deletar receita:", error);
       // TODO: Add toast notification for error
-      return;
-    }
-
-    if (success) {
-      setIncomes((prev) => prev.filter((income) => income.id !== id));
     }
   };
+
+  if (isLoadingIncomes || isLoadingCategories) {
+    return <LoadingSpinner message="Carregando receitas..." />;
+  }
+
+  if (isErrorIncomes) {
+    return (
+      <ErrorAlert
+        title="Erro ao carregar receitas"
+        message={errorIncomes?.message}
+        onRetry={() => refetchIncomes()}
+      />
+    );
+  }
+
+  if (isErrorCategories) {
+    return (
+      <ErrorAlert
+        title="Erro ao carregar categorias"
+        message={errorCategories?.message}
+        onRetry={() => refetchCategories()}
+      />
+    );
+  }
 
   return (
     <>
