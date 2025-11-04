@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import type { IAnalyticsSummary } from "@/types/analytics";
 import { TrendingUp, TrendingDown, DollarSign, Wallet } from "lucide-react";
+import { NumberTicker } from "@/components/ui/number-ticker";
 
 interface IAnalyticsDashboardProps {
   summary: IAnalyticsSummary;
@@ -40,10 +41,15 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                 Total de Receitas
               </p>
               <h3 className="text-2xl font-bold text-chart-2">
-                {formatCurrency(summary.totalIncomes)}
+                R${" "}
+                <NumberTicker
+                  value={summary.totalIncomes}
+                  decimalPlaces={2}
+                  className="text-2xl font-bold"
+                />
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                {summary.incomeCount}{" "}
+                <NumberTicker value={summary.incomeCount} decimalPlaces={0} />{" "}
                 {summary.incomeCount === 1 ? "transação" : "transações"}
               </p>
             </div>
@@ -61,10 +67,15 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                 Total de Despesas
               </p>
               <h3 className="text-2xl font-bold text-chart-5">
-                {formatCurrency(summary.totalExpenses)}
+                R${" "}
+                <NumberTicker
+                  value={summary.totalExpenses}
+                  decimalPlaces={2}
+                  className="text-2xl font-bold"
+                />
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
-                {summary.expenseCount}{" "}
+                <NumberTicker value={summary.expenseCount} decimalPlaces={0} />{" "}
                 {summary.expenseCount === 1 ? "transação" : "transações"}
               </p>
             </div>
@@ -84,7 +95,12 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               <h3
                 className={`text-2xl font-bold ${summary.netBalance >= 0 ? "text-chart-2" : "text-chart-5"}`}
               >
-                {formatCurrency(summary.netBalance)}
+                R${" "}
+                <NumberTicker
+                  value={summary.netBalance}
+                  decimalPlaces={2}
+                  className="text-2xl font-bold"
+                />
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
                 Receitas - Despesas
@@ -112,7 +128,12 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               <h3
                 className={`text-2xl font-bold ${summary.savingsRate >= 0 ? "text-chart-2" : "text-chart-5"}`}
               >
-                {formatPercentage(summary.savingsRate)}
+                <NumberTicker
+                  value={summary.savingsRate}
+                  decimalPlaces={1}
+                  className="text-2xl font-bold"
+                />
+                %
               </h3>
               <p className="text-xs text-muted-foreground mt-1">
                 Do total de receitas

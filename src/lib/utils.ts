@@ -18,3 +18,23 @@ export function getGreeting() {
 
   return "Boa noite";
 }
+
+export function parseNumericValue(val: string): {
+  numericValue: number;
+  prefix: string;
+  isCurrency: boolean;
+} {
+  const cleanValue = val.replace(/[^\d,-]/g, "");
+
+  const isCurrency = val.includes("R$");
+
+  const numericValue = parseFloat(cleanValue.replace(",", "."));
+
+  const prefix = isCurrency ? "R$ " : "";
+
+  return {
+    numericValue: isNaN(numericValue) ? 0 : numericValue,
+    prefix,
+    isCurrency,
+  };
+}

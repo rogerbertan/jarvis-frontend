@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import type { LucideIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, parseNumericValue } from "@/lib/utils";
+import { NumberTicker } from "@/components/ui/number-ticker";
 
 interface DashboardCardProps {
   title: string;
@@ -23,6 +24,8 @@ export function DashboardCard({
     neutral: "text-muted-foreground",
   };
 
+  const { numericValue, prefix, isCurrency } = parseNumericValue(value);
+
   return (
     <Card className="p-6">
       <div className="flex items-start justify-between">
@@ -34,7 +37,20 @@ export function DashboardCard({
               trend !== "neutral" && trendColors[trend]
             )}
           >
-            {value}
+            {!isNaN(numericValue) && numericValue !== 0 ? (
+              <>
+                <span className={cn(trend !== "neutral" && trendColors[trend])}>
+                  {prefix}
+                </span>
+                <NumberTicker
+                  value={numericValue}
+                  decimalPlaces={isCurrency ? 2 : 0}
+                  className="text-2xl font-bold"
+                />
+              </>
+            ) : (
+              value
+            )}
           </h3>
           {description && (
             <p className="text-sm text-muted-foreground">{description}</p>

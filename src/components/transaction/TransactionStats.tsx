@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { IMonthlyStats } from "@/types/transaction";
 import { cn } from "@/lib/utils";
+import { NumberTicker } from "@/components/ui/number-ticker";
 
 interface ITransactionStatsProps {
   stats: IMonthlyStats;
@@ -15,13 +16,6 @@ export function TransactionStats({
   countLabel,
   colorVariant = "expense",
 }: ITransactionStatsProps) {
-  const formatAmount = (amount: number): string => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(amount);
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -41,9 +35,11 @@ export function TransactionStats({
             <span className="text-sm text-muted-foreground font-body">
               {countLabel}
             </span>
-            <span className="text-lg font-semibold font-heading">
-              {stats.count}
-            </span>
+            <NumberTicker
+              value={stats.count}
+              decimalPlaces={0}
+              className="text-lg font-semibold font-heading"
+            />
           </div>
           <div className="flex items-center justify-between border-t pt-4">
             <span className="text-sm text-muted-foreground font-body">
@@ -55,7 +51,7 @@ export function TransactionStats({
                 colorVariant === "income" ? "text-chart-2" : "text-chart-5"
               )}
             >
-              {formatAmount(stats.total)}
+              R$ <NumberTicker value={stats.total} decimalPlaces={2} className="text-2xl font-bold font-heading" />
             </span>
           </div>
         </div>
