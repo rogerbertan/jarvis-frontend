@@ -35,12 +35,12 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         {/* Total Incomes */}
         <Card className="p-6">
-          <div className="flex items-start justify-between">
-            <div>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
               <p className="text-sm text-muted-foreground mb-1">
                 Total de Receitas
               </p>
-              <h3 className="text-2xl font-bold text-chart-2">
+              <h3 className="text-2xl font-bold text-chart-2 break-words">
                 R${" "}
                 <NumberTicker
                   value={summary.totalIncomes}
@@ -53,7 +53,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                 {summary.incomeCount === 1 ? "transação" : "transações"}
               </p>
             </div>
-            <div className="p-2 bg-green-500/10 rounded-full">
+            <div className="flex-shrink-0 p-2 bg-green-500/10 rounded-full">
               <Wallet className="h-5 w-5 text-chart-2" />
             </div>
           </div>
@@ -61,12 +61,12 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
 
         {/* Total Expenses */}
         <Card className="p-6">
-          <div className="flex items-start justify-between">
-            <div>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
               <p className="text-sm text-muted-foreground mb-1">
                 Total de Despesas
               </p>
-              <h3 className="text-2xl font-bold text-chart-5">
+              <h3 className="text-2xl font-bold text-chart-5 break-words">
                 R${" "}
                 <NumberTicker
                   value={summary.totalExpenses}
@@ -79,7 +79,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
                 {summary.expenseCount === 1 ? "transação" : "transações"}
               </p>
             </div>
-            <div className="p-2 bg-red-500/10 rounded-full">
+            <div className="flex-shrink-0 p-2 bg-red-500/10 rounded-full">
               <DollarSign className="h-5 w-5 text-chart-5" />
             </div>
           </div>
@@ -87,13 +87,13 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
 
         {/* Net Balance */}
         <Card className="p-6">
-          <div className="flex items-start justify-between">
-            <div>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
               <p className="text-sm text-muted-foreground mb-1">
                 Saldo Líquido
               </p>
               <h3
-                className={`text-2xl font-bold ${summary.netBalance >= 0 ? "text-chart-2" : "text-chart-5"}`}
+                className={`text-2xl font-bold break-words ${summary.netBalance >= 0 ? "text-chart-2" : "text-chart-5"}`}
               >
                 R${" "}
                 <NumberTicker
@@ -107,7 +107,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               </p>
             </div>
             <div
-              className={`p-2 rounded-full ${summary.netBalance >= 0 ? "bg-green-500/10" : "bg-red-500/10"}`}
+              className={`flex-shrink-0 p-2 rounded-full ${summary.netBalance >= 0 ? "bg-green-500/10" : "bg-red-500/10"}`}
             >
               {summary.netBalance >= 0 ? (
                 <TrendingUp className="h-5 w-5 text-chart-2" />
@@ -120,13 +120,13 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
 
         {/* Savings Rate */}
         <Card className="p-6">
-          <div className="flex items-start justify-between">
-            <div>
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1 min-w-0">
               <p className="text-sm text-muted-foreground mb-1">
                 Taxa de Poupança
               </p>
               <h3
-                className={`text-2xl font-bold ${summary.savingsRate >= 0 ? "text-chart-2" : "text-chart-5"}`}
+                className={`text-2xl font-bold break-words ${summary.savingsRate >= 0 ? "text-chart-2" : "text-chart-5"}`}
               >
                 <NumberTicker
                   value={summary.savingsRate}
@@ -140,7 +140,7 @@ export function AnalyticsDashboard({ summary }: IAnalyticsDashboardProps) {
               </p>
             </div>
             <div
-              className={`p-2 rounded-full ${summary.savingsRate >= 0 ? "bg-green-500/10" : "bg-red-500/10"}`}
+              className={`flex-shrink-0 p-2 rounded-full ${summary.savingsRate >= 0 ? "bg-green-500/10" : "bg-red-500/10"}`}
             >
               {summary.savingsRate >= 0 ? (
                 <TrendingUp className="h-5 w-5 text-chart-2" />
