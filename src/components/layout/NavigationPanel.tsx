@@ -63,7 +63,7 @@ export function NavigationPanel() {
       aria-label="Menu de navegação"
     >
       {/* Header */}
-      <div className="relative w-[200px] h-[200px] -ml-14 -mt-10 -mb-10">
+      <div className="relative w-[190px] h-[190px] -ml-12 -mt-10 -mb-10">
         <Image
           src="/jarvis_logo_nobg.svg"
           alt="Jarvis Logo"
