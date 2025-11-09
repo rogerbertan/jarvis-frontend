@@ -32,7 +32,13 @@ const stats = [
   },
 ];
 
-function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string }) {
+function AnimatedNumber({
+  value,
+  suffix = "",
+}: {
+  value: number;
+  suffix?: string;
+}) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
@@ -68,7 +74,10 @@ function AnimatedNumber({ value, suffix = "" }: { value: number; suffix?: string
 
 export function AnalyticsShowcase() {
   return (
-    <section id="analytics-showcase" className="py-24 px-4 relative overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent">
+    <section
+      id="analytics-showcase"
+      className="py-24 px-12 relative overflow-hidden bg-gradient-to-b from-transparent via-primary/5 to-transparent"
+    >
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -199,7 +208,11 @@ export function AnalyticsShowcase() {
                   </h4>
                   <div className="space-y-2">
                     {[
-                      { label: "Alimentação", value: 75, color: "bg-purple-500" },
+                      {
+                        label: "Alimentação",
+                        value: 75,
+                        color: "bg-purple-500",
+                      },
                       { label: "Transporte", value: 55, color: "bg-blue-500" },
                       { label: "Moradia", value: 90, color: "bg-green-500" },
                       { label: "Lazer", value: 40, color: "bg-orange-500" },

@@ -113,40 +113,42 @@ export function LandingFooter() {
             </motion.div>
 
             {/* Links sections */}
-            {Object.entries(footerLinks).map(([category, links], categoryIndex) => (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
-                className="space-y-4"
-              >
-                <h3 className="font-heading font-semibold text-foreground capitalize">
-                  {category === "product"
-                    ? "Produto"
-                    : category === "company"
-                    ? "Empresa"
-                    : category === "legal"
-                    ? "Legal"
-                    : "Suporte"}
-                </h3>
-                <ul className="space-y-3">
-                  {links.map((link, index) => (
-                    <li key={index}>
-                      <Link
-                        href={link.href}
-                        className="text-muted-foreground hover:text-primary transition-colors font-body text-sm group inline-flex items-center"
-                      >
-                        <span className="group-hover:translate-x-1 transition-transform inline-block">
-                          {link.label}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
+            {Object.entries(footerLinks).map(
+              ([category, links], categoryIndex) => (
+                <motion.div
+                  key={category}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: categoryIndex * 0.1 }}
+                  className="space-y-4"
+                >
+                  <h3 className="font-heading font-semibold text-foreground capitalize">
+                    {category === "product"
+                      ? "Produto"
+                      : category === "company"
+                        ? "Empresa"
+                        : category === "legal"
+                          ? "Legal"
+                          : "Suporte"}
+                  </h3>
+                  <ul className="space-y-3">
+                    {links.map((link, index) => (
+                      <li key={index}>
+                        <Link
+                          href={link.href}
+                          className="text-muted-foreground hover:text-primary transition-colors font-body text-sm group inline-flex items-center"
+                        >
+                          <span className="group-hover:translate-x-1 transition-transform inline-block">
+                            {link.label}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )
+            )}
           </div>
         </div>
 
@@ -161,7 +163,8 @@ export function LandingFooter() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             {/* Copyright */}
             <p className="text-sm text-muted-foreground font-body text-center md:text-left">
-              © {new Date().getFullYear()} Jarvis. Todos os direitos reservados.
+              © {new Date().getFullYear()} Jarvis. Todos os direitos
+              reservados.
             </p>
 
             {/* Made with love */}

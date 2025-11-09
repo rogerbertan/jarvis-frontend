@@ -60,7 +60,7 @@ const item = {
 
 export function FeaturesGrid() {
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section className="py-24 px-12 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
 

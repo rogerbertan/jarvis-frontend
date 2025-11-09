@@ -1,14 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Target,
-  Clock,
-  Shield,
-  Zap,
-  Brain,
-  LineChart,
-} from "lucide-react";
+import { Target, Clock, Shield, Zap, Brain, LineChart } from "lucide-react";
 
 const benefits = [
   {
@@ -51,7 +44,7 @@ const benefits = [
 
 export function BenefitsSection() {
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section className="py-24 px-12 relative overflow-hidden">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-primary/5" />
 
@@ -145,8 +138,7 @@ export function BenefitsSection() {
               ))}
             </div>
             <p className="text-sm font-medium text-foreground">
-              Junte-se a centenas de usuários que já transformaram suas
-              finanças
+              Junte-se a centenas de usuários que já transformaram suas finanças
             </p>
           </div>
         </motion.div>

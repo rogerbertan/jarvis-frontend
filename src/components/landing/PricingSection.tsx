@@ -33,12 +33,15 @@ const pricingPlans: PricingPlan[] = [
     id: "premium",
     name: "Premium",
     description: "Para quem quer controle total e insights avançados",
-    price: 29.90,
+    price: 29.9,
     period: "por mês",
     featured: true,
     features: [
       { text: "Transações ilimitadas", included: true },
-      { text: "Dashboard completo com widgets personalizáveis", included: true },
+      {
+        text: "Dashboard completo com widgets personalizáveis",
+        included: true,
+      },
       { text: "Categorização automática com IA", included: true },
       { text: "Análises avançadas e preditivas", included: true },
       { text: "Relatórios personalizados (PDF, Excel)", included: true },
@@ -54,7 +57,7 @@ const pricingPlans: PricingPlan[] = [
 
 export function PricingSection() {
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section className="py-24 px-12 relative overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/10 to-transparent" />
       <motion.div
@@ -126,7 +129,9 @@ export function PricingSection() {
                     ? "border-2 border-primary bg-card shadow-2xl shadow-primary/20"
                     : "border border-border bg-card"
                 } transition-all duration-300 hover:shadow-xl ${
-                  plan.featured ? "hover:shadow-primary/30" : "hover:shadow-muted/20"
+                  plan.featured
+                    ? "hover:shadow-primary/30"
+                    : "hover:shadow-muted/20"
                 } overflow-hidden group`}
               >
                 {/* Background gradient for featured */}
@@ -204,9 +209,7 @@ export function PricingSection() {
                         >
                           <div
                             className={`flex-shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center ${
-                              feature.included
-                                ? "bg-primary/20"
-                                : "bg-muted/20"
+                              feature.included ? "bg-primary/20" : "bg-muted/20"
                             }`}
                           >
                             <Check

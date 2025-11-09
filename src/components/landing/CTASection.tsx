@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export function CTASection() {
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section className="py-24 px-12 relative overflow-hidden">
       {/* Animated background gradients */}
       <div className="absolute inset-0">
         <motion.div

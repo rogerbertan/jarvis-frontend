@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 py-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-12 py-20">
       {/* Animated background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/10 opacity-50" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
@@ -34,7 +34,10 @@ export function HeroSection() {
                 alt="Jarvis Logo"
                 fill
                 className="object-contain"
-                style={{ filter: "brightness(0) saturate(100%) invert(27%) sepia(93%) saturate(5841%) hue-rotate(268deg) brightness(92%) contrast(120%)" }}
+                style={{
+                  filter:
+                    "brightness(0) saturate(100%) invert(27%) sepia(93%) saturate(5841%) hue-rotate(268deg) brightness(92%) contrast(120%)",
+                }}
               />
             </div>
             <span className="text-4xl font-heading font-bold text-foreground">
