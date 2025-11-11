@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { Trash2, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,7 +9,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import type { ITransaction, TransactionType } from "@/types/transaction";
+import { cn } from "@/lib/utils";
 
 interface ITransactionListProps {
   type: TransactionType;
@@ -40,6 +42,16 @@ export function TransactionList({
       style: "currency",
       currency: "BRL",
     }).format(amount);
+  };
+
+  const getPaymentMethodLabel = (method: string): string => {
+    const labels: Record<string, string> = {
+      cash: "Dinheiro",
+      debit: "Débito",
+      credit_card: "Crédito",
+      pix: "PIX",
+    };
+    return labels[method] || method;
   };
 
   if (transactions.length === 0) {
@@ -78,12 +90,34 @@ export function TransactionList({
             </TableHeader>
             <TableBody>
               {transactions.map((transaction) => (
-                <TableRow key={transaction.id}>
+                <TableRow
+                  key={transaction.id}
+                  className={cn(
+                    transaction.payment_method === "credit_card" &&
+                    transaction.installments_total &&
+                    "bg-blue-50/30 dark:bg-blue-950/20"
+                  )}
+                >
                   <TableCell className="font-medium font-body">
                     {formatDate(transaction.date)}
                   </TableCell>
                   <TableCell className="font-body">
-                    {transaction.title}
+                    <div className="flex items-center gap-2">
+                      <span>{transaction.title}</span>
+                      {transaction.payment_method === "credit_card" &&
+                       transaction.installments_total && (
+                        <Badge variant="secondary" className="text-xs">
+                          <CreditCard className="w-3 h-3 mr-1" />
+                          {transaction.installment_number}/{transaction.installments_total}
+                        </Badge>
+                      )}
+                    </div>
+                    {transaction.purchase_date &&
+                     transaction.purchase_date !== transaction.date && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Compra: {formatDate(transaction.purchase_date)}
+                      </p>
+                    )}
                   </TableCell>
                   <TableCell className="font-body">
                     {transaction.category}
@@ -100,6 +134,11 @@ export function TransactionList({
                         type === "expense"
                           ? "Excluir despesa"
                           : "Excluir receita"
+                      }
+                      title={
+                        transaction.installments_total
+                          ? "Deletar todas as parcelas"
+                          : undefined
                       }
                     >
                       <Trash2 className="h-4 w-4 text-destructive" />

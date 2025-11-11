@@ -5,6 +5,36 @@ import { createClient } from "@/lib/supabase/server";
 import type { IExpense, IExpenseFormData } from "@/types/expense";
 
 /**
+ * Calculate the payment date for an installment
+ */
+function calculatePaymentDate(
+  purchaseDate: string,
+  invoiceDay: number,
+  installmentNumber: number
+): string {
+  const date = new Date(purchaseDate);
+  date.setMonth(date.getMonth() + installmentNumber);
+  date.setDate(invoiceDay);
+  date.setHours(0, 0, 0, 0);
+  return date.toISOString().split("T")[0];
+}
+
+/**
+ *  Get users invoice payment day from profile
+ */
+async function getUserInvoicePaymentDay(userId: string): Promise<number> {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("users")
+    .select("invoice_payment_day")
+    .eq("id", userId)
+    .single();
+
+  return data?.invoice_payment_day || 5;
+}
+
+/**
  * Get all expenses for the current user
  * @param filters - Optional filters (month, year, category, date range)
  */
@@ -124,6 +154,14 @@ export async function createExpense(
     return { data: null, error: "Valor inválido" };
   }
 
+  if (
+    formData.payment_method === "credit_card" &&
+    formData.installments &&
+    formData.installments > 1
+  ) {
+    return createInstallmentExpenses(formData, user.id);
+  }
+
   const { data, error } = await supabase
     .from("expenses")
     .insert({
@@ -132,6 +170,7 @@ export async function createExpense(
       amount,
       category: formData.category,
       date: formData.date,
+      payment_method: formData.payment_method || "debit",
     })
     .select()
     .single();
@@ -148,7 +187,80 @@ export async function createExpense(
 }
 
 /**
- * Update an existing expense
+ * Create multiple expense entries for installments
+ */
+async function createInstallmentExpenses(
+  formData: IExpenseFormData,
+  userId: string
+): Promise<{ data: IExpense | null; error: string | null }> {
+  const supabase = await createClient();
+
+  const totalAmount = parseFloat(formData.amount);
+  const installments = formData.installments || 1;
+  const invoiceDay = await getUserInvoicePaymentDay(userId);
+
+  const baseAmount = Math.floor((totalAmount / installments) * 100) / 100;
+  const remainder =
+    Math.round((totalAmount - baseAmount * installments) * 100) / 100;
+  const firstInstallmentAmount = baseAmount + remainder;
+
+  const { data: parentData, error: parentError } = await supabase
+    .from("expenses")
+    .insert({
+      user_id: userId,
+      title: `${formData.title} (1/${installments})`,
+      amount: firstInstallmentAmount,
+      category: formData.category,
+      date: calculatePaymentDate(formData.date, invoiceDay, 1),
+      payment_method: "credit_card",
+      purchase_date: formData.date,
+      installments_total: installments,
+      installment_number: 1,
+      parent_expense_id: null,
+    })
+    .select()
+    .single();
+
+  if (parentError) {
+    return { data: null, error: parentError.message };
+  }
+
+  // Create remaining installments
+  if (installments > 1) {
+    const childInstallments = [];
+    for (let i = 2; i <= installments; i++) {
+      childInstallments.push({
+        user_id: userId,
+        title: `${formData.title} (${i}/${installments})`,
+        amount: baseAmount,
+        category: formData.category,
+        date: calculatePaymentDate(formData.date, invoiceDay, i),
+        payment_method: "credit_card",
+        purchase_date: formData.date,
+        installments_total: installments,
+        installment_number: i,
+        parent_expense_id: parentData.id,
+      });
+    }
+
+    const { error: childError } = await supabase
+      .from("expenses")
+      .insert(childInstallments);
+
+    if (childError) {
+      return { data: null, error: childError.message };
+    }
+  }
+
+  revalidatePath("/");
+  revalidatePath("/expenses");
+  revalidatePath("/analytics");
+
+  return { data: parentData, error: null };
+}
+
+/**
+ * Update an existing expense (disabled for installments)
  */
 export async function updateExpense(
   id: number,
@@ -164,6 +276,19 @@ export async function updateExpense(
     return { data: null, error: "Usuário não autenticado" };
   }
 
+  const { data: expense } = await supabase
+    .from("expenses")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (expense && (expense.parent_expense_id || expense.installments_total)) {
+    return {
+      data: null,
+      error: "Não é possível editar parcelas. Delete e recrie a despesa.",
+    };
+  }
+
   const updateData: Record<string, unknown> = {};
 
   if (formData.title) updateData.title = formData.title;
@@ -176,6 +301,8 @@ export async function updateExpense(
   }
   if (formData.category) updateData.category = formData.category;
   if (formData.date) updateData.date = formData.date;
+  if (formData.payment_method)
+    updateData.payment_method = formData.payment_method;
 
   const { data, error } = await supabase
     .from("expenses")
@@ -197,7 +324,7 @@ export async function updateExpense(
 }
 
 /**
- * Delete an expense
+ * Delete an expense (including all related installments if applicable)
  */
 export async function deleteExpense(
   id: number
@@ -212,14 +339,69 @@ export async function deleteExpense(
     return { success: false, error: "Usuário não autenticado" };
   }
 
-  const { error } = await supabase
+  const { data: expense, error: getError } = await supabase
     .from("expenses")
-    .delete()
+    .select("*")
     .eq("id", id)
-    .eq("user_id", user.id);
+    .eq("user_id", user.id)
+    .single();
 
-  if (error) {
-    return { success: false, error: error.message };
+  if (getError) {
+    return { success: false, error: getError.message };
+  }
+
+  if (expense.parent_expense_id) {
+    const parentId = expense.parent_expense_id;
+
+    const { error: deleteChildrenError } = await supabase
+      .from("expenses")
+      .delete()
+      .eq("parent_expense_id", parentId)
+      .eq("user_id", user.id);
+
+    if (deleteChildrenError) {
+      return { success: false, error: deleteChildrenError.message };
+    }
+
+    const { error: deleteParentError } = await supabase
+      .from("expenses")
+      .delete()
+      .eq("id", parentId)
+      .eq("user_id", user.id);
+
+    if (deleteParentError) {
+      return { success: false, error: deleteParentError.message };
+    }
+  } else if (expense.installment_number === 1 && expense.installments_total) {
+    const { error: deleteChildrenError } = await supabase
+      .from("expenses")
+      .delete()
+      .eq("parent_expense_id", id)
+      .eq("user_id", user.id);
+
+    if (deleteChildrenError) {
+      return { success: false, error: deleteChildrenError.message };
+    }
+
+    const { error: deleteParentError } = await supabase
+      .from("expenses")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id);
+
+    if (deleteParentError) {
+      return { success: false, error: deleteParentError.message };
+    }
+  } else {
+    const { error } = await supabase
+      .from("expenses")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", user.id);
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
   }
 
   revalidatePath("/");

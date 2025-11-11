@@ -23,6 +23,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type {
   ITransactionFormData,
+  PaymentMethod,
   TransactionType,
 } from "@/types/transaction";
 import type { ICategory } from "@/types/category";
@@ -34,6 +35,13 @@ interface ITransactionFormProps {
   title: string;
   buttonText: string;
 }
+
+const PAYMENT_METHODS: { value: PaymentMethod; label: string }[] = [
+  { value: "cash", label: "Dinheiro" },
+  { value: "credit_card", label: "Cartão de Crédito" },
+  { value: "debit", label: "Débito" },
+  { value: "pix", label: "Pix" },
+];
 
 export function TransactionForm({
   type,
@@ -47,8 +55,10 @@ export function TransactionForm({
     amount: "",
     date: new Date().toISOString().split("T")[0],
     category: categories[0]?.name || "",
+    payment_method: "cash",
   });
   const [categoryOpen, setCategoryOpen] = useState(false);
+  const [paymentMethodOpen, setPaymentMethodOpen] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
@@ -59,7 +69,8 @@ export function TransactionForm({
       !formData.title.trim() ||
       !formData.amount ||
       !formData.date ||
-      !formData.category
+      !formData.category ||
+      !formData.payment_method
     ) {
       return;
     }
@@ -67,6 +78,13 @@ export function TransactionForm({
     const amount = parseFloat(formData.amount);
     if (isNaN(amount) || amount <= 0) {
       return;
+    }
+
+    if (formData.payment_method === "credit_card" && type === "expense") {
+      if (!formData.installments || formData.installments < 1) {
+        alert("Número de parcelas inválido");
+        return;
+      }
     }
 
     onAddTransaction(formData);
@@ -77,9 +95,15 @@ export function TransactionForm({
       amount: "",
       date: newDate.toISOString().split("T")[0],
       category: categories[0]?.name || "",
+      payment_method: "debit",
+      installments: 1,
     });
     setSelectedDate(newDate);
   };
+
+  const selectedPaymentMethod = PAYMENT_METHODS.find(
+    (pm) => pm.value === formData.payment_method
+  );
 
   return (
     <Card>
@@ -129,6 +153,107 @@ export function TransactionForm({
               required
             />
           </div>
+
+          {type === "expense" && (
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium font-body">
+                Forma de Pagamento
+              </label>
+              <Popover
+                open={paymentMethodOpen}
+                onOpenChange={setPaymentMethodOpen}
+              >
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={paymentMethodOpen}
+                    className="w-full justify-between font-body"
+                  >
+                    {selectedPaymentMethod?.label ||
+                      "Selecione um método de pagamento"}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <Command>
+                    <CommandInput placeholder="Buscar forma de pagamento..." />
+                    <CommandList>
+                      <CommandEmpty>
+                        Nenhuma forma de pagamento encontrada.
+                      </CommandEmpty>
+                      <CommandGroup>
+                        {PAYMENT_METHODS.map((method) => (
+                          <CommandItem
+                            key={method.value}
+                            value={method.value}
+                            onSelect={() => {
+                              setFormData({
+                                ...formData,
+                                payment_method: method.value,
+                                installments:
+                                  method.value === "credit_card"
+                                    ? formData.installments
+                                    : undefined,
+                              });
+                              setPaymentMethodOpen(false);
+                            }}
+                          >
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.payment_method === method.value
+                                  ? "opacity-100"
+                                  : "opacity-0"
+                              )}
+                            />
+                            {method.label}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+          )}
+
+          {type === "expense" && formData.payment_method === "credit_card" && (
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="installments"
+                className="text-sm font-medium font-body"
+              >
+                Número de Parcelas
+              </label>
+              <Input
+                id="installments"
+                type="number"
+                min="1"
+                max="24"
+                placeholder="1"
+                value={formData.installments || 1}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    installments: parseInt(e.target.value) || 1,
+                  })
+                }
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                A compra será dividida em {formData.installments || 1}x de R${" "}
+                {formData.amount
+                  ? (
+                      parseFloat(formData.amount) / (formData.installments || 1)
+                    ).toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })
+                  : "0,00"}
+              </p>
+            </div>
+          )}
 
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium font-body">Data</label>

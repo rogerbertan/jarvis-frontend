@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { User, Image } from "lucide-react";
+import { User, Image, Calendar1 } from "lucide-react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
@@ -38,6 +38,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
     defaultValues: {
       full_name: user.full_name,
       avatar_url: user.avatar_url,
+      invoice_payment_day: user.invoice_payment_day,
     },
   });
 
@@ -129,9 +130,26 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 disabled={isLoading}
               />
             </div>
-            {errors.avatar_url && (
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="invoice_payment_day">
+              Dia de Pagamento da Fatura
+            </Label>
+            <div className="relative">
+              <Calendar1 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                id="invoice_payment_day"
+                type="number"
+                placeholder="5"
+                className="pl-10"
+                {...register("invoice_payment_day", { valueAsNumber: true })}
+                disabled={isLoading}
+              />
+            </div>
+            {errors.invoice_payment_day && (
               <p className="text-sm text-red-600 dark:text-red-400">
-                {errors.avatar_url.message}
+                {errors.invoice_payment_day.message}
               </p>
             )}
           </div>

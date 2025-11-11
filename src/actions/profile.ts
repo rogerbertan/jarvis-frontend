@@ -31,6 +31,7 @@ export async function getUserProfile() {
 export async function updateUserProfile(formData: {
   full_name: string;
   avatar_url?: string;
+  invoice_payment_day?: number;
 }) {
   const supabase = await createClient();
 
@@ -49,6 +50,7 @@ export async function updateUserProfile(formData: {
       full_name: formData.full_name,
       avatar_url: formData.avatar_url || null,
       updated_at: new Date().toISOString(),
+      invoice_payment_day: formData.invoice_payment_day || null,
     })
     .eq("id", user.id);
 

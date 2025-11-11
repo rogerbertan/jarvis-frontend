@@ -23,6 +23,5 @@
   ALTER TABLE expenses ADD CONSTRAINT
   check_installment_valid CHECK (
     installment_number IS NULL OR
-    (installments_total IS NULL OR installment_number <=
-  installments_total)
+    (installments_total IS NULL OR installment_number <= installments_total)
   );
