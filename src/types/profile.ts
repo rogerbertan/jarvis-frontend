@@ -5,4 +5,5 @@ export interface IUserProfile {
   avatar_url?: string;
   created_at?: string;
   updated_at?: string;
+  invoice_payment_day?: number;
 }

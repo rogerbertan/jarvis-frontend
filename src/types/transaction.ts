@@ -11,6 +11,11 @@ export interface ITransaction {
   date: string;
   created_at: string;
   updated_at: string;
+  payment_method: PaymentMethod;
+  installments_total?: number;
+  installment_number?: number;
+  parent_expense_id?: number;
+  purchase_date?: string;
 }
 
 /**
@@ -21,6 +26,8 @@ export interface ITransactionFormData {
   amount: string;
   date: string;
   category: string;
+  payment_method: PaymentMethod;
+  installments?: number;
 }
 
 /**
@@ -46,6 +53,11 @@ export interface IMonthlyStats {
   count: number;
   month: string;
 }
+
+/**
+ * Payment method options
+ */
+export type PaymentMethod = "cash" | "credit_card" | "debit" | "pix";
 
 /**
  * Transaction type enum
