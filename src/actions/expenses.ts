@@ -253,7 +253,7 @@ async function createInstallmentExpenses(
     .from("expenses")
     .insert({
       user_id: userId,
-      title: `${formData.title} (1/${installments})`,
+      title: formData.title,
       amount: firstInstallmentAmount,
       category: formData.category,
       date: calculatePaymentDate(formData.date, paymentDay, closingDay, 1),
@@ -276,7 +276,7 @@ async function createInstallmentExpenses(
     for (let i = 2; i <= installments; i++) {
       childInstallments.push({
         user_id: userId,
-        title: `${formData.title} (${i}/${installments})`,
+        title: formData.title,
         amount: baseAmount,
         category: formData.category,
         date: calculatePaymentDate(formData.date, paymentDay, closingDay, i),

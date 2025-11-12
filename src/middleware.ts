@@ -4,6 +4,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 const publicRoutes = [
   { path: "/login", whenAuthenticated: "redirect" },
   { path: "/register", whenAuthenticated: "redirect" },
+  { path: "/home", whenAuthenticated: "allow" },
 ] as const;
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = "/login";
