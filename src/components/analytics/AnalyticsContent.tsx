@@ -33,8 +33,20 @@ export default function AnalyticsContent({
   initialIncomeCategories,
 }: AnalyticsContentProps) {
   const {
-    expenses: { data: expenses = [], isLoading: isLoadingExpenses, isError: isErrorExpenses, error: errorExpenses, refetch: refetchExpenses },
-    incomes: { data: incomes = [], isLoading: isLoadingIncomes, isError: isErrorIncomes, error: errorIncomes, refetch: refetchIncomes },
+    expenses: {
+      data: expenses = [],
+      isLoading: isLoadingExpenses,
+      isError: isErrorExpenses,
+      error: errorExpenses,
+      refetch: refetchExpenses,
+    },
+    incomes: {
+      data: incomes = [],
+      isLoading: isLoadingIncomes,
+      isError: isErrorIncomes,
+      error: errorIncomes,
+      refetch: refetchIncomes,
+    },
   } = useAnalyticsQuery(initialExpenses, initialIncomes);
 
   const expenseCategories = initialExpenseCategories;

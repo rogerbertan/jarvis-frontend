@@ -39,6 +39,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       full_name: user.full_name,
       avatar_url: user.avatar_url,
       invoice_payment_day: user.invoice_payment_day,
+      invoice_closing_day: user.invoice_closing_day,
     },
   });
 
@@ -130,6 +131,32 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 disabled={isLoading}
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="invoice_closing_day">
+              Dia de Fechamento da Fatura
+            </Label>
+            <div className="relative">
+              <Calendar1 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                id="invoice_closing_day"
+                type="number"
+                placeholder="20"
+                className="pl-10"
+                {...register("invoice_closing_day", { valueAsNumber: true })}
+                disabled={isLoading}
+              />
+            </div>
+            {errors.invoice_closing_day && (
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {errors.invoice_closing_day.message}
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              Compras feitas no dia de fechamento ou depois vão para a próxima
+              fatura.
+            </p>
           </div>
 
           <div className="space-y-2">

@@ -13,8 +13,13 @@ export const profileSchema = z.object({
     .or(z.literal("")),
   invoice_payment_day: z
     .number()
-    .min(1, { message: "Dia deve ser entre 1 e 28" })
-    .max(28, { message: "Dia deve ser entre 1 e 28" })
+    .min(1, { message: "Dia deve ser entre 1 e 31" })
+    .max(31, { message: "Dia deve ser entre 1 e 31" })
+    .optional(),
+  invoice_closing_day: z
+    .number()
+    .min(1, { message: "Dia deve ser entre 1 e 31" })
+    .max(31, { message: "Dia deve ser entre 1 e 31" })
     .optional(),
 });
 

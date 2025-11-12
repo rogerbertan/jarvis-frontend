@@ -29,7 +29,11 @@ export function TransactionList({
   emptyMessage,
 }: ITransactionListProps) {
   const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
+    const parts = dateString.includes("T")
+      ? dateString.split("T")[0].split("-")
+      : dateString.split("-");
+    const [year, month, day] = parts.map(Number);
+    const date = new Date(year, month - 1, day);
     return date.toLocaleDateString("pt-BR", {
       year: "numeric",
       month: "short",
@@ -42,16 +46,6 @@ export function TransactionList({
       style: "currency",
       currency: "BRL",
     }).format(amount);
-  };
-
-  const getPaymentMethodLabel = (method: string): string => {
-    const labels: Record<string, string> = {
-      cash: "Dinheiro",
-      debit: "Débito",
-      credit_card: "Crédito",
-      pix: "PIX",
-    };
-    return labels[method] || method;
   };
 
   if (transactions.length === 0) {
@@ -94,8 +88,8 @@ export function TransactionList({
                   key={transaction.id}
                   className={cn(
                     transaction.payment_method === "credit_card" &&
-                    transaction.installments_total &&
-                    "bg-blue-50/30 dark:bg-blue-950/20"
+                      transaction.installments_total &&
+                      "bg-blue-50/30 dark:bg-blue-950/20"
                   )}
                 >
                   <TableCell className="font-medium font-body">
@@ -105,19 +99,20 @@ export function TransactionList({
                     <div className="flex items-center gap-2">
                       <span>{transaction.title}</span>
                       {transaction.payment_method === "credit_card" &&
-                       transaction.installments_total && (
-                        <Badge variant="secondary" className="text-xs">
-                          <CreditCard className="w-3 h-3 mr-1" />
-                          {transaction.installment_number}/{transaction.installments_total}
-                        </Badge>
-                      )}
+                        transaction.installments_total && (
+                          <Badge variant="secondary" className="text-xs">
+                            <CreditCard className="w-3 h-3 mr-1" />
+                            {transaction.installment_number}/
+                            {transaction.installments_total}
+                          </Badge>
+                        )}
                     </div>
                     {transaction.purchase_date &&
-                     transaction.purchase_date !== transaction.date && (
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Compra: {formatDate(transaction.purchase_date)}
-                      </p>
-                    )}
+                      transaction.purchase_date !== transaction.date && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Compra: {formatDate(transaction.purchase_date)}
+                        </p>
+                      )}
                   </TableCell>
                   <TableCell className="font-body">
                     {transaction.category}

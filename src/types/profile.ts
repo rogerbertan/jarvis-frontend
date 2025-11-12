@@ -6,4 +6,5 @@ export interface IUserProfile {
   created_at?: string;
   updated_at?: string;
   invoice_payment_day?: number;
+  invoice_closing_day?: number;
 }

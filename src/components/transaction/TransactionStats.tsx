@@ -51,7 +51,12 @@ export function TransactionStats({
                 colorVariant === "income" ? "text-chart-2" : "text-chart-5"
               )}
             >
-              R$ <NumberTicker value={stats.total} decimalPlaces={2} className="text-2xl font-bold font-heading" />
+              R${" "}
+              <NumberTicker
+                value={stats.total}
+                decimalPlaces={2}
+                className="text-2xl font-bold font-heading"
+              />
             </span>
           </div>
         </div>

@@ -2,36 +2,81 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { formatDateToString } from "@/lib/utils";
 import type { IExpense, IExpenseFormData } from "@/types/expense";
 
 /**
- * Calculate the payment date for an installment
+ * Calculate the payment date for an installment based on invoice cycle logic
+ *
+ * Logic:
+ * - If closingDay is null, use simple fallback (always next month)
+ * - Invoice cycle: purchases from previous closing day to current closing day
+ * - The invoice for that cycle is paid on paymentDay of the NEXT month
+ * - Example: closing day 29, payment day 5
+ *   - Purchase on 02/11: belongs to Nov invoice, paid 05/12
+ *   - Purchase on 29/11: belongs to Dec invoice, paid 05/01
+ *
+ * @param purchaseDate - The date the purchase was made (YYYY-MM-DD)
+ * @param paymentDay - The day of month when invoice is paid (1-31)
+ * @param closingDay - The day of month when invoice closes (1-31, nullable)
+ * @param installmentNumber - Which installment this is (1-based)
  */
 function calculatePaymentDate(
   purchaseDate: string,
-  invoiceDay: number,
+  paymentDay: number,
+  closingDay: number | null,
   installmentNumber: number
 ): string {
-  const date = new Date(purchaseDate);
-  date.setMonth(date.getMonth() + installmentNumber);
-  date.setDate(invoiceDay);
-  date.setHours(0, 0, 0, 0);
-  return date.toISOString().split("T")[0];
+  const [year, month, day] = purchaseDate.split("-").map(Number);
+  const purchase = new Date(year, month - 1, day);
+  purchase.setHours(0, 0, 0, 0);
+
+  const purchaseDay = purchase.getDate();
+  const purchaseMonth = purchase.getMonth();
+  const purchaseYear = purchase.getFullYear();
+
+  if (closingDay === null) {
+    const paymentDate = new Date(purchaseYear, purchaseMonth, paymentDay);
+    paymentDate.setMonth(paymentDate.getMonth() + installmentNumber);
+    paymentDate.setHours(0, 0, 0, 0);
+    return formatDateToString(paymentDate);
+  }
+
+  let firstPaymentMonth = purchaseMonth + 1;
+
+  if (purchaseDay >= closingDay) {
+    firstPaymentMonth = purchaseMonth + 2;
+  }
+
+  const paymentDate = new Date(
+    purchaseYear,
+    firstPaymentMonth + (installmentNumber - 1),
+    paymentDay
+  );
+  paymentDate.setHours(0, 0, 0, 0);
+
+  return formatDateToString(paymentDate);
 }
 
 /**
- *  Get users invoice payment day from profile
+ * Get user's invoice payment and closing days from profile
+ * @returns Object with paymentDay and closingDay (both can be null if not configured)
  */
-async function getUserInvoicePaymentDay(userId: string): Promise<number> {
+async function getUserInvoiceSettings(
+  userId: string
+): Promise<{ paymentDay: number; closingDay: number | null }> {
   const supabase = await createClient();
 
   const { data } = await supabase
     .from("users")
-    .select("invoice_payment_day")
+    .select("invoice_payment_day, invoice_closing_day")
     .eq("id", userId)
     .single();
 
-  return data?.invoice_payment_day || 5;
+  return {
+    paymentDay: data?.invoice_payment_day || 5,
+    closingDay: data?.invoice_closing_day || null,
+  };
 }
 
 /**
@@ -197,7 +242,7 @@ async function createInstallmentExpenses(
 
   const totalAmount = parseFloat(formData.amount);
   const installments = formData.installments || 1;
-  const invoiceDay = await getUserInvoicePaymentDay(userId);
+  const { paymentDay, closingDay } = await getUserInvoiceSettings(userId);
 
   const baseAmount = Math.floor((totalAmount / installments) * 100) / 100;
   const remainder =
@@ -211,7 +256,7 @@ async function createInstallmentExpenses(
       title: `${formData.title} (1/${installments})`,
       amount: firstInstallmentAmount,
       category: formData.category,
-      date: calculatePaymentDate(formData.date, invoiceDay, 1),
+      date: calculatePaymentDate(formData.date, paymentDay, closingDay, 1),
       payment_method: "credit_card",
       purchase_date: formData.date,
       installments_total: installments,
@@ -234,7 +279,7 @@ async function createInstallmentExpenses(
         title: `${formData.title} (${i}/${installments})`,
         amount: baseAmount,
         category: formData.category,
-        date: calculatePaymentDate(formData.date, invoiceDay, i),
+        date: calculatePaymentDate(formData.date, paymentDay, closingDay, i),
         payment_method: "credit_card",
         purchase_date: formData.date,
         installments_total: installments,

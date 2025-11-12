@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/command";
 import { Calendar } from "@/components/ui/calendar";
 import { Check, ChevronsUpDown, CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatDateToString } from "@/lib/utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type {
@@ -53,7 +53,7 @@ export function TransactionForm({
   const [formData, setFormData] = useState<ITransactionFormData>({
     title: "",
     amount: "",
-    date: new Date().toISOString().split("T")[0],
+    date: formatDateToString(new Date()),
     category: categories[0]?.name || "",
     payment_method: "cash",
   });
@@ -93,7 +93,7 @@ export function TransactionForm({
     setFormData({
       title: "",
       amount: "",
-      date: newDate.toISOString().split("T")[0],
+      date: formatDateToString(newDate),
       category: categories[0]?.name || "",
       payment_method: "debit",
       installments: 1,
@@ -283,7 +283,7 @@ export function TransactionForm({
                       setSelectedDate(date);
                       setFormData({
                         ...formData,
-                        date: date.toISOString().split("T")[0],
+                        date: formatDateToString(date),
                       });
                       setCalendarOpen(false);
                     }
